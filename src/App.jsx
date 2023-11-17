@@ -179,7 +179,7 @@ function App() {
        <ReactTooltip
         anchorId="info-contract"
         place="bottom"
-        content="Live on Goerli ETH"
+        content="Live on Xxxigm testnet"
       />
 
       <BrowserRouter>

@@ -3,7 +3,8 @@ import toast from "react-hot-toast";
 import ABI from "../artifacts/contracts/Gmail.sol/Gmail.json"
 
 //const addr = "0xcf68237118486F0E7562A83Ba7b4107CF6A8aF00";
-const   addr = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+// const   addr = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const   addr = "0xCdCe8cB978dFDd87D854C4E1388D472587Df15bc";
 
 
 export const fetchInboxSender = async()=>{
@@ -36,6 +37,7 @@ export const fetchInboxSender = async()=>{
                 cleaned.push(mailUser)
             }
             cleaned.reverse()
+            console.log(cleaned)
             return cleaned
             
         }
@@ -96,6 +98,7 @@ export const fetchSentSender= async()=>{
 
             const contract   = new ethers.Contract(addr,ABI.abi,signer);
             const res        = await contract.sent();
+            console.log(res)
             let cleaned =[]
             for(let data of res){
                 const mailUser={

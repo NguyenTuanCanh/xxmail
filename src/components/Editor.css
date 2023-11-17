@@ -3,8 +3,8 @@
     right:0;
     bottom:0;
     background-color:white;
-    min-width:355px;
-    height:48%;
+    min-width:400px;
+    height: 540px;;
     margin-right:1%;
     border-radius:7px;
     box-shadow: rgba(0, 0, 0, 0.192) 0px 5px 15px;
@@ -12,7 +12,9 @@
     z-index:122;
     margin-bottom:.5%;
 }
-
+.markdownEditor textarea {
+    height: 350px;
+}
 .header-edit{
     background-color:#c2e7ff75;
     height:9%;

@@ -1,6 +1,7 @@
 import './Home.css'
 import hamburger from '../assets/img/hamburger.svg'
-import logo from '../assets/img/gmail.png';
+import logoFull from '../assets/img/logo-full.svg';
+import logoText from '../assets/img/logo-text.svg';
 import search from '../assets/img/search.svg';
 import filter from '../assets/img/filter.svg';
 import edit from '../assets/img/edit.svg';
@@ -36,7 +37,7 @@ function TabContentInbox(props){
                     className={`mail-data ${props.selectionId.includes(e.index)?"mail-data-selected":""}`}
                 >
                     <div className='mail-data-start'>
-                        <span className="material-symbols-outlined" style={props.onSelect ? {color:"black"}:{color:"rgba(63, 63, 63, 0.342)"}} onClick={()=>{
+                        <span className="material-symbols-outlined" style={props.onSelect ? {color:"rgb(255,86,63)"}: {}} onClick={()=>{
                             props.setOnSelect(true)
                             props.setSelectionId([...props.selectionId,e.index])
                             if(props.onSelect){
@@ -68,7 +69,7 @@ function TabContentInbox(props){
                             style={{color:e.read && "gray"}}>{e.subject} </p>
                         </div>
                     <p className='mediumRegular mark' style={{color:e.read && "gray"}}>
-                        <span className='boldSans'>{e.markdown.substring(0,23)}</span> - <span className='opp'>{e.markdown.slice(-56)}...</span>
+                        <span className='boldSans'>{e.markdown.substring(0,23)}</span> - <span className='opp'>{e.markdown}</span>
                     </p>
                     <p className='mediumSans hour'>{new Date(e.timeStamp).toLocaleTimeString()}</p>
 
@@ -157,7 +158,7 @@ function TabContentGeneral(props){
                 >
                     <div className='mail-data-start'>
                    
-                    <span className="material-symbols-outlined" style={props.onSelect ? {color:"black"}:{color:"rgba(63, 63, 63, 0.342)"}} onClick={()=>{
+                    <span className="material-symbols-outlined" style={props.onSelect ? {color:"rgb(255,86,63)"}:{color:"rgba(63, 63, 63, 0.342)"}} onClick={()=>{
                             props.setOnSelect(true)
                             props.setSelectionId([...props.selectionId,e.index])
                             if(props.onSelect){
@@ -179,9 +180,9 @@ function TabContentGeneral(props){
                     
                         <span onClick={()=>{
 
-                        }} className="material-symbols-outlined" style={{color:e.starred&&"#f4b400"}}>
+                        }} className="material-symbols-outlined" style={{color:e.starred&&"#FF563F"}}>
                             star
-                        </span> :<span className="material-symbols-outlined" style={{color:"#d50000"}}>report</span>
+                        </span> :<span className="material-symbols-outlined" style={{color:"#FF563F"}}>report</span>
                     }
 
                         <p className='boldSans'>{e.subject} </p>
@@ -286,170 +287,19 @@ export default function Home(props){
             isOpen={isOpen} setIsOpen={setIsOpen} 
             LoaderRef={props.LoaderRef}
         />
-        
-        <div className='Navbar'> 
-            <div className='NavMenuTitle'>
-                <img src={hamburger} width={28} className='navIcon' onClick={()=>{
-                    setMenuToggle(!menuToggle)
-                }}/>
-                <div>
-                    <img src={logo} width={28}/>
-                    <p style={{fontSize:20}} className='mediumRegular'>Nodemail</p>
-                </div>
-            </div>
-            
-                <div className='searchbar' ref={ref}>
-                    <div className={`${onFocus == true ? 'input-focus':''} input`}>
 
-                        <img src={search} width={26} onClick={()=>{
-                            if(searchValue.trim().length != 0){
-                                if(index == 0){
-                                    const filtered = props.inbox.filter((item) =>
-                                        item.subject.toLowerCase().includes(searchValue.toLowerCase().trim()) ||
-                                        item.markdown.toLowerCase().includes(searchValue.toLowerCase().trim()) 
-
-                                    );
-                                    setFilteredResults(filtered)
-                                    console.log(filtered)
-                                }
-                            }
-                        }}/>
-                        <input value={`${searchValue}`}  onFocus={()=>{
-                            setOnFocus(true)
-                        }}  onChange={(e)=>{
-                    
-                            setSearchValue(e.target.value)
-                            const res = suggestion.filter(element => element.toLowerCase().includes(e.target.value.toLowerCase()))
-                            setFilteredSearch(res.slice(0,1))
-
-                            let pattern  = RegExp(`${e.target.value.toLowerCase()}`)
-
-                            if(refSuggestion.current != null){
-                                refSuggestion.current.innerHTML = refSuggestion.current.innerText.toLowerCase().replace(
-                                    pattern,match=> `<mark>${match}</mark>`
-                                )
-                            }
-                            if(index == 0){
-                                const filtered = props.inbox.filter((item) =>
-                                    item.subject.toLowerCase().includes(e.target.value.toLowerCase().trim()) ||
-                                    item.markdown.toLowerCase().includes(e.target.value.toLowerCase().trim()) 
-
-                                );
-                                setFilteredResults(filtered)
-                                console.log(filtered)
-                            }
-                           
-
-                        }} type="text" placeholder='Search mail' className='mediumRegular'/>
-                        <img src={filter} width={26} style={{opacity:!onFocus &&0.1}}/>
-                        
-                    </div>
-
-                    { onFocus && filteredSearch.length != 0 &&
-                    <motion.div 
-                    initial    =  {{ y:100,opacity:1}}
-                    animate    =  {{ y: 0  ,opacity:1 }}
-                    
-                        className='searchbar-options'
-                    > 
-                        <div className='options'>
-                            {   filteredSearch.length != 0 &&
-                                filteredSearch.map((el,key)=>{
-                                    return <motion.p  key={key}
-                                    initial    =  {{ opacity:0}}
-                                    animate    =  {{ opacity:1 }}
-                                    exit       =  {{ opacity:0}}
-                                    transition =  {{ delay:index * 1}}
-
-                                    onClick={()=>{
-                                        setSearchValue(el)
-                                        setOnFocus(false)
-                                    }} className='search-autocomplete mediumRegular'>
-                                    <span className="material-symbols-outlined" style={{color:"black"}}>history</span> 
-                                    <span ref={refSuggestion}>{el}</span>
-                                </motion.p>
-                                })
-                            }
-                            {   filteredSearch.length == 0 &&
-                                <motion.div 
-                                    initial    =  {{ x:-100,opacity:0}}
-                                    animate    =  {{ x: 0  ,opacity:1 }}
-                                    exit       =  {{ x:-100,opacity:0}}
-                                    transition =  {{ delay:0 * 0.06}}
-                                    className='no-result mediumSans'>
-                                    No previous search keywords 
-                                </motion.div>
-                            }
-                            
-                            
-                        </div>
-                    </motion.div>
-                    }
-                </div>
-
-            <div className='toolBox'>
-                <span className="material-symbols-outlined" id='info-app'>info</span>
-                <span className="material-symbols-outlined" id='info-contract'>key</span>
-                <div onClick={()=>{setModalUser(!modalUser)}}>
-                <Blockies
-                    seed={props.user.trim().length != 0?props.user:""}
-                    size={10} 
-                    scale={3} 
-                    color="rgba(255,255,255,.2)" 
-                    bgColor="#0b57d0" 
-                    spotColor="rgba(255,255,255,.2)"
-                    className="identicon" 
-                />
-                </div>
-                
-                { modalUser &&
-                <motion.div 
-                initial    =  {{ y:100,opacity:1}}
-                animate    =  {{ y: 0  ,opacity:1 }}
-                ref        =  {modalUserRef}
-                className='user-more'>
-                    <div className='user-more-details'>
-                    <Blockies
-                        seed={props.user.trim().length != 0?props.user:""}
-                        size={18} 
-                        scale={3} 
-                        color="rgba(255,255,255,.2)" 
-                        bgColor="#0b57d0" 
-                        spotColor="rgba(255,255,255,.2)"
-                        className="identicon" 
-                    />
-                    <div className='data-user'>
-                        <p className='mediumSans'>{props.user.substring(0,6)+"...."+props.user.slice(-6)}</p>
-                        <button onClick={()=>{
-                            window.open(`https://etherscan.io/address/${props.user}`,'_blank')
-                        }} className='mediumSans'>View on Etherscan</button>
-                    </div>
-                    
-                    </div>
-                    <button className='signout' onClick={async()=>{
-                        await window.ethereum.request({
-                            method: "eth_requestAccounts",
-                            params: [{eth_accounts: {}}]
-                        })
-                        props.setUser('')
-                        navigate('/')
-                        
-
-                    }}>
-                        <span className="material-symbols-outlined">logout</span>
-                        <span className='mediumSans'>Sign out</span>
-                    </button>
-                </motion.div>
-                    }
-
-
-            </div>
-        </div>
-
-        <div className='body' style={{gridTemplateColumns:menuToggle ? "5% 1fr":"18% 1fr"}}>
+        <div className='bodyMain'>
             <div className='SideNav'>
+                <div className='NavMenuTitle'>
+                    {/* <img src={hamburger} width={28} className='navIcon' onClick={()=>{
+                        setMenuToggle(!menuToggle)
+                    }}/> */}
+                    <div>
+                        <img src={logoFull} width={28}/>
+                    </div>
+                </div>
                 <button onClick={()=>setIsOpen(true)} className={`${menuToggle?"composeToggle":"compose"} mediumRegular`}>
-                    <img src={edit} width={28}/>
+                    {/* <img src={edit} width={28}/> */}
                     {!menuToggle && 'Compose'}
                 </button>
 
@@ -613,6 +463,154 @@ export default function Home(props){
                 
             </div>
             <div className='body-email'>
+                <div className='Navbar'> 
+                    <div className='searchbar' ref={ref}>
+                        <div className={`${onFocus == true ? 'input-focus':''} input`}>
+
+                            <img src={search} width={26} onClick={()=>{
+                                if(searchValue.trim().length != 0){
+                                    if(index == 0){
+                                        const filtered = props.inbox.filter((item) =>
+                                            item.subject.toLowerCase().includes(searchValue.toLowerCase().trim()) ||
+                                            item.markdown.toLowerCase().includes(searchValue.toLowerCase().trim()) 
+
+                                        );
+                                        setFilteredResults(filtered)
+                                        console.log(filtered)
+                                    }
+                                }
+                            }}/>
+                            <input value={`${searchValue}`}  onFocus={()=>{
+                                setOnFocus(true)
+                            }}  onChange={(e)=>{
+                        
+                                setSearchValue(e.target.value)
+                                const res = suggestion.filter(element => element.toLowerCase().includes(e.target.value.toLowerCase()))
+                                setFilteredSearch(res.slice(0,1))
+
+                                let pattern  = RegExp(`${e.target.value.toLowerCase()}`)
+
+                                if(refSuggestion.current != null){
+                                    refSuggestion.current.innerHTML = refSuggestion.current.innerText.toLowerCase().replace(
+                                        pattern,match=> `<mark>${match}</mark>`
+                                    )
+                                }
+                                if(index == 0){
+                                    const filtered = props.inbox.filter((item) =>
+                                        item.subject.toLowerCase().includes(e.target.value.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(e.target.value.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+                            
+
+                            }} type="text" placeholder='Search' className='mediumRegular'/>
+                            {/* <img src={filter} width={26} style={{opacity:!onFocus &&0.1}}/> */}
+                            
+                        </div>
+
+                        { onFocus && filteredSearch.length != 0 &&
+                        <motion.div 
+                        initial    =  {{ y:100,opacity:1}}
+                        animate    =  {{ y: 0  ,opacity:1 }}
+                        
+                            className='searchbar-options'
+                        > 
+                            <div className='options'>
+                                {   filteredSearch.length != 0 &&
+                                    filteredSearch.map((el,key)=>{
+                                        return <motion.p  key={key}
+                                        initial    =  {{ opacity:0}}
+                                        animate    =  {{ opacity:1 }}
+                                        exit       =  {{ opacity:0}}
+                                        transition =  {{ delay:index * 1}}
+
+                                        onClick={()=>{
+                                            setSearchValue(el)
+                                            setOnFocus(false)
+                                        }} className='search-autocomplete mediumRegular'>
+                                        <span className="material-symbols-outlined" style={{color:"black"}}>history</span> 
+                                        <span ref={refSuggestion}>{el}</span>
+                                    </motion.p>
+                                    })
+                                }
+                                {   filteredSearch.length == 0 &&
+                                    <motion.div 
+                                        initial    =  {{ x:-100,opacity:0}}
+                                        animate    =  {{ x: 0  ,opacity:1 }}
+                                        exit       =  {{ x:-100,opacity:0}}
+                                        transition =  {{ delay:0 * 0.06}}
+                                        className='no-result mediumSans'>
+                                        No previous search keywords 
+                                    </motion.div>
+                                }
+                                
+                                
+                            </div>
+                        </motion.div>
+                        }
+                    </div>
+
+                <div className='toolBox'>
+                    <span className="material-symbols-outlined" id='info-app'>info</span>
+                    <span className="material-symbols-outlined" id='info-contract'>key</span>
+                    <div onClick={()=>{setModalUser(!modalUser)}}>
+                    <Blockies
+                        seed={props.user.trim().length != 0?props.user:""}
+                        size={10} 
+                        scale={3} 
+                        color="rgba(255,255,255,.2)" 
+                        bgColor="#0b57d0" 
+                        spotColor="rgba(255,255,255,.2)"
+                        className="identicon" 
+                    />
+                    </div>
+                    
+                    { modalUser &&
+                    <motion.div 
+                    initial    =  {{ y:100,opacity:1}}
+                    animate    =  {{ y: 0  ,opacity:1 }}
+                    ref        =  {modalUserRef}
+                    className='user-more'>
+                        <div className='user-more-details'>
+                        <Blockies
+                            seed={props.user.trim().length != 0?props.user:""}
+                            size={18} 
+                            scale={3} 
+                            color="rgba(255,255,255,.2)" 
+                            bgColor="#0b57d0" 
+                            spotColor="rgba(255,255,255,.2)"
+                            className="identicon" 
+                        />
+                        <div className='data-user'>
+                            <p className='mediumSans'>{props.user.substring(0,6)+"...."+props.user.slice(-6)}</p>
+                            {/* <button onClick={()=>{
+                                window.open(`https://etherscan.io/address/${props.user}`,'_blank')
+                            }} className='mediumSans'>View on Etherscan</button> */}
+                        </div>
+                        
+                        </div>
+                        <button className='signout' onClick={async()=>{
+                            await window.ethereum.request({
+                                method: "eth_requestAccounts",
+                                params: [{eth_accounts: {}}]
+                            })
+                            props.setUser('')
+                            navigate('/')
+                            
+
+                        }}>
+                            <span className="material-symbols-outlined">logout</span>
+                            <span className='mediumSans'>Sign out</span>
+                        </button>
+                    </motion.div>
+                        }
+
+
+                </div>
+            </div>
                 <div className='header'>
                     <div className='header-tools'>
                         <div className='header-tools-row'>
@@ -628,7 +626,7 @@ export default function Home(props){
                                 </span>
                             }
                             {   selected == null &&
-                                <span style={onSelect ? {color:"black"}:{}} onClick={()=>{
+                                <span style={onSelect ? {color:"rgb(255,86,63)"}:{}} onClick={()=>{
                                     if(selected == null){
                                             setOnSelect(!onSelect)
                                             if(onSelect != true){
@@ -706,7 +704,7 @@ export default function Home(props){
     
                                         }}>refresh</span>
                                     }
-                                    <span className="material-symbols-outlined">more_vert</span>
+                                    {/* <span className="material-symbols-outlined">more_vert</span> */}
 
                 
                             </div>
@@ -768,7 +766,7 @@ export default function Home(props){
                     {
                         selectionId.length > 0 && selected == null && <div className='selection-banner mediumSans'><span className='num' style={{color:"black"}}>{selectionId.length.toString()}</span> conversations on this page are selected.  You can select more mail as you want in the page</div>
                     }
-                    {
+                    {/* {
                         index == 0 && selected == null && <div className='tabs'>
                         <div className='ceil'>
                             <button onClick={()=>{
@@ -814,7 +812,7 @@ export default function Home(props){
                        
 
                     </div>
-                    }
+                    } */}
                     
                     {
                         index == 0 && selected == null &&
