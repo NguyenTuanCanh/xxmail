@@ -1,14 +1,13 @@
 import './Home.css'
-import hamburger from '../assets/img/hamburger.svg'
 import logoFull from '../assets/img/logo-full.svg';
-import logoText from '../assets/img/logo-text.svg';
 import search from '../assets/img/search.svg';
-import filter from '../assets/img/filter.svg';
-import edit from '../assets/img/edit.svg';
+import metamask from '../assets/img/metamask.svg';
+import logoWallet from '../assets/img/logo-wallet.svg';
+import noEmail from '../assets/img/no-email.svg';
 import Blockies from 'react-blockies';
 import { useEffect, useRef, useState } from 'react';
 import Editor from './Editor';
-import { BulkAction, fetchReplySender} from '../utils/contract';
+import { isXxxigmNetWork, BulkAction, fetchReplySender} from '../utils/contract';
 import {motion} from 'framer-motion'
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -19,9 +18,9 @@ function TabContentInbox(props){
             props.tabContent[props.tabController()].length == 0 && <div className='no-content mediumRegular'>
                 
                 {
-                    props.onFetching == true ?<p>Loading...</p>:<p>You don't have any {props.tabController()} mails.{
+                    props.onFetching == true ?<p>Loading...</p>:<div><img src={ noEmail } alt="" /> You don't have any {props.tabController()} mails.{
                         props.onFocus 
-                    }</p>
+                    }</div>
                 }
             </div>
         }
@@ -68,10 +67,18 @@ function TabContentInbox(props){
                             }} 
                             style={{color:e.read && "gray"}}>{e.subject} </p>
                         </div>
-                    <p className='mediumRegular mark' style={{color:e.read && "gray"}}>
+                    <p className='mediumRegular mark' style={{color:e.read && "gray"}} onClick =  {()=>{
+                                props.setOnSelect(true)
+                                props.setSelectionId([e.index])
+                                props.setSelected(e)
+                            }} >
                         <span className='boldSans'>{e.markdown.substring(0,23)}</span> - <span className='opp'>{e.markdown}</span>
                     </p>
-                    <p className='mediumSans hour'>{new Date(e.timeStamp).toLocaleTimeString()}</p>
+                    <p className='mediumSans hour' style={{color:e.read && "gray"}} onClick =  {()=>{
+                                props.setOnSelect(true)
+                                props.setSelectionId([e.index])
+                                props.setSelected(e)
+                            }}>{e.timeStamp}</p>
 
                     
 
@@ -84,13 +91,13 @@ function TabContentGeneral(props){
 
     
     const tabContentController = {
-        "trash":props.trash,
-        "sent" :props.sent,
-        "starred":props.star,
-        "archive":props.archive,
-        "spam":props.spam,
-        "unread":props.unread,
-        "read":props.read,
+        "trash": props.onFocus ? props.filteredResults : props.trash,
+        "sent" : props.onFocus ? props.filteredResults : props.sent,
+        "starred": props.onFocus ? props.filteredResults : props.star,
+        "archive": props.onFocus ? props.filteredResults : props.archive,
+        "spam": props.onFocus ? props.filteredResults : props.spam,
+        "unread": props.onFocus ? props.filteredResults : props.unread,
+        "read":props.onFocus ? props.filteredResults : props.read,
 
     }
     const name = ()=>{
@@ -143,6 +150,7 @@ function TabContentGeneral(props){
     return <div className='data'>
         {
             tabContentController[name()].length == 0 && <div className='no-content mediumRegular'>
+                <img src={ noEmail } alt="" />
                 <p>You don't have any {name()} mails. </p>
                 
             </div>
@@ -190,7 +198,7 @@ function TabContentGeneral(props){
                     <p className='mediumRegular mark'>
                         <span className='boldSans'>{e.markdown.substring(0,23)}</span> - <span className='opp'>{e.markdown.slice(-56)}...</span>
                     </p>
-                    <p className='mediumSans hour'>{new Date(e.timeStamp).toLocaleTimeString()}</p>
+                    <p className='mediumSans hour'>{e.timeStamp}</p>
                     
 
                 </motion.div>
@@ -210,6 +218,7 @@ export default function Home(props){
     const [starredId  ,setStarredId]   = useState([])
     const [bulkFlag,setBulkFlag]       = useState(undefined)
     const [onFocus,setOnFocus]         = useState(false)
+    const [numberFocus,setNumberFocus] = useState(0)
     const [searchValue,setSearchValue] = useState('')
     const [modalUser,setModalUser]     = useState(false)
     const [suggestion,setSuggestion]   = useState([])
@@ -223,7 +232,7 @@ export default function Home(props){
 
 
     const tabContent = {
-        "primary": onFocus ? filteredResults:props.inbox,
+        "primary": onFocus ? filteredResults : props.inbox,
         "promotions":onFocus ? filteredResults:[],
         "social":onFocus ? filteredResults:[]
     }
@@ -246,7 +255,7 @@ export default function Home(props){
     const handleClickOutside = event => {
       if (ref.current && !ref.current.contains(event.target)) {
         setOnFocus(false)
-        setFilteredResults([])
+        // setFilteredResults([])
       }
 
     };
@@ -261,16 +270,58 @@ export default function Home(props){
 
     const fetchReplies = async()=>{
         setReplyLoading(true)
-        await fetchReplySender(selected.index).then((res)=>{setDataReply(res)})
+        await fetchReplySender(selected.index).then((res)=>{
+            setDataReply(res)
+        })
         setReplyLoading(false)
 
     }
+
+    const copyValueToClipboard = (value) => {
+        navigator.clipboard.writeText(value)
+        .then(() =>{
+            toast.success('Copied!')
+        })
+      };
+    
+      // Hàm xử lý khi nhấn vào thẻ để copy giá trị
+    const handleCopyClick = () => {
+        const valueToCopy = props.user; // Thay đổi giá trị cần sao chép ở đây
+        copyValueToClipboard(valueToCopy);
+    };
+    
+    const onLogout = async()=>{
+        await window.ethereum.request({
+            method: "eth_requestAccounts",
+            params: [{eth_accounts: {}}]
+        })
+        props.setUser('')
+        navigate('/')
+    }
+
 
     useEffect(()=>{
         if(selected != null){
             fetchReplies()
         }
     },[selected])
+
+    useEffect(()=>{
+        setNumberFocus(0)
+        setSearchValue('')
+    },[index])
+
+    useEffect(()=>{
+        !props.user && navigate('/')
+    },[props.user])
+
+    useEffect(() => {
+        setInterval(async() => {
+            if(!await isXxxigmNetWork()) {
+                props.setUser('')
+            }
+        }, 1000);
+      }, [])
 
   
     return <div className='Home'>
@@ -286,14 +337,12 @@ export default function Home(props){
             refreshInbox={props.refreshInbox} 
             isOpen={isOpen} setIsOpen={setIsOpen} 
             LoaderRef={props.LoaderRef}
+            user={props.user}
         />
 
         <div className='bodyMain'>
             <div className='SideNav'>
                 <div className='NavMenuTitle'>
-                    {/* <img src={hamburger} width={28} className='navIcon' onClick={()=>{
-                        setMenuToggle(!menuToggle)
-                    }}/> */}
                     <div>
                         <img src={logoFull} width={28}/>
                     </div>
@@ -437,7 +486,7 @@ export default function Home(props){
                         }
                     </li>
 
-                    <li  onClick={()=>setIndex(8)} className={index == 8 ?"active":""}>
+                    {/* <li  onClick={()=>setIndex(8)} className={index == 8 ?"active":""}>
                     <span className="material-symbols-outlined">
                         delete
                         </span>
@@ -455,11 +504,13 @@ export default function Home(props){
                             </motion.span>
                         
                         }
-                    </li>
+                    </li> */}
 
 
                 </ul>
                 }
+
+                <div className='withLove'>Made with ❤️ by xxxigm</div>
                 
             </div>
             <div className='body-email'>
@@ -481,9 +532,97 @@ export default function Home(props){
                                 }
                             }}/>
                             <input value={`${searchValue}`}  onFocus={()=>{
-                                setOnFocus(true)
+                                if(numberFocus) {
+                                    setOnFocus(true)
+                                }
+                                const res = suggestion.filter(element => element.toLowerCase().includes(searchValue.toLowerCase()))
+                                setFilteredSearch(res.slice(0,1))
+
+                                let pattern  = RegExp(`${searchValue.toLowerCase()}`)
+
+                                if(refSuggestion.current != null){
+                                    refSuggestion.current.innerHTML = refSuggestion.current.innerText.toLowerCase().replace(
+                                        pattern,match=> `<mark>${match}</mark>`
+                                    )
+                                }
+                                if(index == 0){
+                                    const filtered = props.inbox.filter((item) =>
+                                        item.subject.toLowerCase().includes(searchValue.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(searchValue.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+                                if(index == 1){
+                                    const filtered = props.star.filter((item) =>
+                                        item.subject.toLowerCase().includes(searchValue.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(searchValue.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+                                if(index == 2){
+                                    const filtered = props.sent.filter((item) =>
+                                        item.subject.toLowerCase().includes(searchValue.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(searchValue.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+                                if(index == 3){
+                                    const filtered = props.archive.filter((item) =>
+                                        item.subject.toLowerCase().includes(searchValue.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(searchValue.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+                                if(index == 4){
+                                    const filtered = props.spam.filter((item) =>
+                                        item.subject.toLowerCase().includes(searchValue.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(searchValue.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+
+                                if(index == 6){
+                                    const filtered = props.unread.filter((item) =>
+                                        item.subject.toLowerCase().includes(searchValue.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(searchValue.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+
+                                if(index == 7){
+                                    const filtered = props.read.filter((item) =>
+                                        item.subject.toLowerCase().includes(searchValue.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(searchValue.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+
+                                if(index == 8){
+                                    const filtered = props.trash.filter((item) =>
+                                        item.subject.toLowerCase().includes(searchValue.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(searchValue.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
                             }}  onChange={(e)=>{
-                        
+                                setOnFocus(true)
+                                setNumberFocus(1)
                                 setSearchValue(e.target.value)
                                 const res = suggestion.filter(element => element.toLowerCase().includes(e.target.value.toLowerCase()))
                                 setFilteredSearch(res.slice(0,1))
@@ -504,10 +643,74 @@ export default function Home(props){
                                     setFilteredResults(filtered)
                                     console.log(filtered)
                                 }
-                            
+                                if(index == 1){
+                                    const filtered = props.star.filter((item) =>
+                                        item.subject.toLowerCase().includes(e.target.value.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(e.target.value.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+                                if(index == 2){
+                                    const filtered = props.sent.filter((item) =>
+                                        item.subject.toLowerCase().includes(e.target.value.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(e.target.value.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+                                if(index == 3){
+                                    const filtered = props.archive.filter((item) =>
+                                        item.subject.toLowerCase().includes(e.target.value.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(e.target.value.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+                                if(index == 4){
+                                    const filtered = props.spam.filter((item) =>
+                                        item.subject.toLowerCase().includes(e.target.value.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(e.target.value.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+
+                                if(index == 6){
+                                    const filtered = props.unread.filter((item) =>
+                                        item.subject.toLowerCase().includes(e.target.value.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(e.target.value.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+
+                                if(index == 7){
+                                    const filtered = props.read.filter((item) =>
+                                        item.subject.toLowerCase().includes(e.target.value.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(e.target.value.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
+
+                                if(index == 8){
+                                    const filtered = props.trash.filter((item) =>
+                                        item.subject.toLowerCase().includes(e.target.value.toLowerCase().trim()) ||
+                                        item.markdown.toLowerCase().includes(e.target.value.toLowerCase().trim()) 
+
+                                    );
+                                    setFilteredResults(filtered)
+                                    console.log(filtered)
+                                }
 
                             }} type="text" placeholder='Search' className='mediumRegular'/>
-                            {/* <img src={filter} width={26} style={{opacity:!onFocus &&0.1}}/> */}
                             
                         </div>
 
@@ -554,66 +757,48 @@ export default function Home(props){
                     </div>
 
                 <div className='toolBox'>
-                    <span className="material-symbols-outlined" id='info-app'>info</span>
-                    <span className="material-symbols-outlined" id='info-contract'>key</span>
-                    <div onClick={()=>{setModalUser(!modalUser)}}>
-                    <Blockies
-                        seed={props.user.trim().length != 0?props.user:""}
-                        size={10} 
-                        scale={3} 
-                        color="rgba(255,255,255,.2)" 
-                        bgColor="#0b57d0" 
-                        spotColor="rgba(255,255,255,.2)"
-                        className="identicon" 
-                    />
+                    <div className='wallet-info'>
+                        <div className='wallet-info-address'>{ props.user.substring(0,4)+"..."+props.user.slice(-4) }</div>
+                        <div className='modal'>
+                            <div className='top'>
+                                <div className='img'>
+                                    <img src={logoWallet} width={26} alt="" />
+                                </div>
+                                <div className='text'>
+                                    <div>
+                                        <div>MetaMask</div>
+                                        <img src={metamask } width={26} alt="" />
+                                    </div>
+                                    <div className='netWork'>Xxxigm</div>
+                                </div>
+                            </div>
+                            <div className='address'>
+                                <div>Default Address</div>
+                                <div onClick={handleCopyClick}>
+                                    <div>{ props.user.substring(0,10)+"..."+props.user.slice(-10) }</div>
+                                    <i className='fa fa-copy' />
+                                </div>
+                            </div>
+                            <div className='domain'>
+                                <div>NFT Domain: <a href="https://dymension-domain.netlify.app/" target="_blank">Target</a></div>
+                            </div>
+                            <div className='domain'>
+                                <div>Game The Airman: <a href="https://the-airman-dymension.netlify.app/" target="_blank">Target</a></div>
+                            </div>
+                            <div className='domain'>
+                                <div>Xxxigm Ecosystem: <a href="https://the-airman-dymension.netlify.app/" target="_blank">Target</a></div>
+                            </div>
+                            <div className='bottom'>
+                                <div className='logout' onClick={ onLogout } >Logout</div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    { modalUser &&
-                    <motion.div 
-                    initial    =  {{ y:100,opacity:1}}
-                    animate    =  {{ y: 0  ,opacity:1 }}
-                    ref        =  {modalUserRef}
-                    className='user-more'>
-                        <div className='user-more-details'>
-                        <Blockies
-                            seed={props.user.trim().length != 0?props.user:""}
-                            size={18} 
-                            scale={3} 
-                            color="rgba(255,255,255,.2)" 
-                            bgColor="#0b57d0" 
-                            spotColor="rgba(255,255,255,.2)"
-                            className="identicon" 
-                        />
-                        <div className='data-user'>
-                            <p className='mediumSans'>{props.user.substring(0,6)+"...."+props.user.slice(-6)}</p>
-                            {/* <button onClick={()=>{
-                                window.open(`https://etherscan.io/address/${props.user}`,'_blank')
-                            }} className='mediumSans'>View on Etherscan</button> */}
-                        </div>
-                        
-                        </div>
-                        <button className='signout' onClick={async()=>{
-                            await window.ethereum.request({
-                                method: "eth_requestAccounts",
-                                params: [{eth_accounts: {}}]
-                            })
-                            props.setUser('')
-                            navigate('/')
-                            
-
-                        }}>
-                            <span className="material-symbols-outlined">logout</span>
-                            <span className='mediumSans'>Sign out</span>
-                        </button>
-                    </motion.div>
-                        }
-
-
                 </div>
-            </div>
+                </div>
                 <div className='header'>
                     <div className='header-tools'>
-                        <div className='header-tools-row'>
+                        <div className={`header-tools-row ${index == 8 ? 'disabled-action' : ''}`}>
+                            {props.indexGeneral}
                             {
                                 selected != null && <span className="material-symbols-outlined" onClick={()=>{
                                     setOnSelect(false)
@@ -636,7 +821,7 @@ export default function Home(props){
                                                 setStarredId([])
                                             }
                                             }
-                                    }} className="material-symbols-outlined">
+                                    }} className="material-symbols-outlined delete-icon">
                                     {
                                         onSelect ? "check_box":"check_box_outline_blank"
                                     }
@@ -647,53 +832,58 @@ export default function Home(props){
                                     {
                                         onSelect && <>
                                         <span className="material-symbols-outlined" onClick={()=>{
+                                            if(index === 8) return
                                             setBulkFlag('archive-flag')
                                             
                                         }}
                                         style={{
-                                            color:bulkFlag == 'archive-flag'?"#0b57d0":"gray"
+                                            color:bulkFlag == 'archive-flag'?"rgb(255, 86, 63)":"gray"
                                         }}>archive</span>
                                         
                                         <span style={{
-                                            color:bulkFlag == 'star-flag'?"#0b57d0":"gray"
+                                            color:bulkFlag == 'star-flag'?"rgb(255, 86, 63)":"gray"
                                         }} 
                                         
                                         onClick={()=>{
+                                            if(index === 8) return
                                             setBulkFlag('star-flag')
                                         }}
                                         className="material-symbols-outlined">star</span>
 
                                         <span style={{
-                                            color:bulkFlag == 'spam-flag'?"#0b57d0":"gray"
+                                            color:bulkFlag == 'spam-flag'?"rgb(255, 86, 63)":"gray"
                                         }} 
                                         onClick={()=>{
+                                            if(index === 8) return
                                             setBulkFlag('spam-flag')
 
                                         }}className="material-symbols-outlined">report</span>
 
                                         <span style={{
-                                            color:bulkFlag == 'unread-flag'?"#0b57d0":"gray"
+                                            color:bulkFlag == 'unread-flag'?"rgb(255, 86, 63)":"gray"
                                         }}  onClick={()=>{
+                                            if(index === 8) return
                                             setBulkFlag('unread-flag')
 
                                         }}className="material-symbols-outlined">mark_email_unread</span>
 
                                         <span style={{
-                                            color:bulkFlag == 'read-flag'?"#0b57d0":"gray"
+                                            color:bulkFlag == 'read-flag'?"rgb(255, 86, 63)":"gray"
                                         }} 
                                         onClick={()=>{
+                                            if(index === 8) return
                                             setBulkFlag('read-flag')
 
                                         }}
                                         className="material-symbols-outlined">mark_email_read</span>
 
                                         <span style={{
-                                            color:bulkFlag == 'trash-flag'?"#0b57d0":"gray"
+                                            color:bulkFlag == 'trash-flag'?"rgb(255, 86, 63)":"gray"
                                         }} 
                                         onClick={()=>{
                                             setBulkFlag('trash-flag')
                                         }}
-                                        className="material-symbols-outlined">delete</span>
+                                        className="material-symbols-outlined delete-icon">delete</span>
                                         </>
                                     }
                                     {
@@ -763,56 +953,6 @@ export default function Home(props){
                             }} className="material-symbols-outlined">chevron_right</span>
                         </div>
                     </div>
-                    {
-                        selectionId.length > 0 && selected == null && <div className='selection-banner mediumSans'><span className='num' style={{color:"black"}}>{selectionId.length.toString()}</span> conversations on this page are selected.  You can select more mail as you want in the page</div>
-                    }
-                    {/* {
-                        index == 0 && selected == null && <div className='tabs'>
-                        <div className='ceil'>
-                            <button onClick={()=>{
-                                if(onFocus){
-                                    setOnFocus(false)
-                                }
-                                setTab(0)
-                            }} className={tab == 0?"tab-element tab-element-active":"tab-element"}>
-                            <span className="material-symbols-outlined" style={{
-                                color:tab == 0?"#0b57d0":"rgb(61,61,61)"
-                            }}>inbox</span>
-                            <span className='mediumSans'>Primary</span>
-                            </button>
-                        </div>
-                        <div className='ceil'>
-                            <button onClick={()=>{
-                                if(onFocus){
-                                    setOnFocus(false)
-
-                                }
-                                setTab(1)
-                            }} className={tab == 1?"tab-element tab-element-active":"tab-element"}>
-                            <span className="material-symbols-outlined" style={{
-                                color:tab == 1?"#0b57d0":"rgb(61,61,61)"
-                            }}>group</span>
-                            <span className='mediumSans'>Promotions</span>
-                            </button>
-                        </div>
-                        <div className='ceil'>
-                            <button onClick={()=>{
-                                if(onFocus){
-                                    setOnFocus(false)
-                                }
-                                setTab(2)
-                            }} className={tab == 2?"tab-element tab-element-active":"tab-element"}>
-                            <span className="material-symbols-outlined" style={{
-                                color:tab == 2?"#0b57d0":"rgb(61,61,61)"
-                            }}>person</span>
-                            <span className='mediumSans'>Social</span>
-                            </button>
-                        </div>
- 
-                       
-
-                    </div>
-                    } */}
                     
                     {
                         index == 0 && selected == null &&
@@ -875,6 +1015,10 @@ export default function Home(props){
 
                             inbox            = {props.inbox}
                             refreshInbox     = {props.refreshInbox}
+
+                            onFocus          = {onFocus}
+                            searchValue      = {searchValue}
+                            filteredResults  ={filteredResults}
 
 
                         />

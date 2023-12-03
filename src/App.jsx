@@ -7,7 +7,7 @@ import Loader from './components/Loader'
 import Home from './components/Home'
 import { getAuthorizedAccounts } from './utils/wallet'
 import { useEffect,useRef } from 'react'
-import { ComposeMail, fetchArchiveSender, fetchInboxSender, fetchReadSender, fetchSentSender, fetchSpamSender, fetchStarredSender, fetchTrashSender, fetchUnreadSender } from './utils/contract'
+import { isXxxigmNetWork, fetchArchiveSender, fetchInboxSender, fetchReadSender, fetchSentSender, fetchSpamSender, fetchStarredSender, fetchTrashSender, fetchUnreadSender } from './utils/contract'
 import LoadingBar from 'react-top-loading-bar'
 import toast, { Toaster } from 'react-hot-toast';
 import Web3 from 'web3'
@@ -67,6 +67,14 @@ function App() {
     })
   }
 
+  const _refreshInbox=async ()=>{
+    fetchInboxSender().then((v)=>{
+      if(v!= undefined){setInbox(v)}
+    }).catch((e)=>{
+      setInbox([])
+    })
+  }
+
 
   const refreshTrash=async ()=>{
 
@@ -80,6 +88,13 @@ function App() {
     })
   }
 
+  const _refreshTrash=async ()=>{
+    fetchTrashSender().then((v)=>{
+      setTrash(v)
+    })
+  }
+
+
   const refreshSent=async ()=>{
 
     setOnFetchingSent(true)
@@ -92,6 +107,14 @@ function App() {
     })
   }
 
+
+  const _refreshSent=async ()=>{
+    fetchSentSender().then((v)=>{
+      setSent(v)
+    })
+  }
+
+
   const refreshUnread=async ()=>{
 
     setOnFetchingUnread(true)
@@ -101,6 +124,12 @@ function App() {
       setUnread(v)
       setOnFetchingUnread(false)
       ref.current.complete()
+    })
+  }
+
+  const _refreshUnread=async ()=>{
+    fetchUnreadSender().then((v)=>{
+      setUnread(v)
     })
   }
 
@@ -116,6 +145,12 @@ function App() {
     })
   }
 
+  const _refreshRead=async ()=>{
+    fetchReadSender().then((v)=>{
+      setRead(v)
+    })
+  }
+
   const refreshSpam=async ()=>{
 
     ref.current.continuousStart()
@@ -126,14 +161,25 @@ function App() {
     })
   }
 
+  const _refreshSpam=async ()=>{
+    fetchSpamSender().then((v)=>{
+      setSpam(v)
+    })
+  }
+
   const refreshArchive=async ()=>{
 
     ref.current.continuousStart()
 
     fetchArchiveSender().then((v)=>{
       setArchive(v)
-      console.log(v)
       ref.current.complete()
+    })
+  }
+
+  const _refreshArchive=async ()=>{
+    fetchArchiveSender().then((v)=>{
+      setArchive(v)
     })
   }
 
@@ -146,29 +192,64 @@ function App() {
       ref.current.complete()
     })
   }
+
+  const _refreshStar=async ()=>{
+    fetchStarredSender().then((v)=>{
+      setStar(v)
+    })
+  }
+
+  useEffect(() => {
+    const myInterval = setInterval(async() => {
+      if(await isXxxigmNetWork() && user) {
+        _refreshInbox()
+        _refreshTrash()
+        _refreshSent()
+        _refreshUnread()
+        _refreshRead()
+        _refreshSpam()
+        _refreshArchive()
+        _refreshStar()
+      } else {
+        clearInterval(myInterval)
+      }
+    }, 1000);
+  }, [user])
+
   useEffect(()=>{
     if(user.trim().length != 0){
       refreshInbox()
     }
 
   },[user])
+
   useEffect(()=>{ 
-    getAuthorizedAccounts(setUser)
-} ,[])
+    const action = async() => {
+      if(await isXxxigmNetWork()) {
+        getAuthorizedAccounts(setUser)
+      } else {
+        setUser('')
+      }
+    }
+
+    action()
+  } ,[])
   return (
     <div className="App">
       {onSign && <Signature/>}
-      <LoadingBar  progress={progress} color='#0b57d0' onLoaderFinished={() => setProgress(0)} ref={ref}/>
+      <LoadingBar  progress={progress} color='#FA543E' onLoaderFinished={() => setProgress(0)} ref={ref}/>
       <Toaster 
-        position='bottom-left'
+        position='center-bottom'
         toastOptions={{
           style: {
             padding: '11px',
             background:"#272727",
             color: 'white',
             fontFamily:"GoogleSansRegular",
-            borderRadius:'0px'
+            borderRadius:'4px',
+            marginBottom: "6px",
           },
+          className: 'toast',
         }}
       />
       <ReactTooltip

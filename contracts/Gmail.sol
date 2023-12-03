@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.16;
 //Hello  fffHelllo GUY
 import "hardhat/console.sol";
 
-contract Gmail {
+contract AVAXGods {
 
     struct Mail {
 
@@ -22,6 +22,7 @@ contract Gmail {
         bool    _spam   ;
         bool    _trash  ;
         bool    _unTracked;
+        bool    _isTop;
 
     }
 
@@ -30,20 +31,27 @@ contract Gmail {
     mapping(address => uint256) uid;
     mapping(address => bool)    scam;
     mapping(address => uint)    indexTrack;
+    mapping(address => Mail[]) sentMails;
 
     
     function compose(address _to,string calldata _subject,string calldata _markdown) external{
 
         uint256 index = indexTrack[msg.sender];
+        uint256 idx = indexTrack[_to];
 
         Mail memory _newMail = Mail(
-            msg.sender,_to,_subject,_markdown,block.timestamp,index,false,false,false,false,false,false,false,false
+            msg.sender,_to,_subject,_markdown,block.timestamp,index,false,false,false,false,false,false,false,false, false
+        );
+        Mail memory _newSentMail = Mail(
+            msg.sender,_to,_subject,_markdown,block.timestamp,idx,false,false,false,false,false,false,false,false, false
         );
         _newMail._inbox = true;
+        _newSentMail._sent = true;
         mails[_to].push(_newMail);
+        mails[msg.sender].push(_newSentMail);
 
         indexTrack[msg.sender] ++;
-
+        indexTrack[_to] ++;
     }
 
     function move(string calldata _to,uint256[] memory _indexes) external {
@@ -101,11 +109,21 @@ contract Gmail {
         
     }
 
-    function reply(uint256 _index,address _to,string calldata _subject,string calldata _markdown) external{
+    function reply(uint256 _index,address _to,string calldata _subject,string calldata _markdown, address _from) external{
         Mail memory _newMail = Mail(
-            msg.sender,_to,_subject,_markdown,block.timestamp,_index,false,false,false,false,false,false,false,false
+            msg.sender,_to,_subject,_markdown,block.timestamp,_index,false,false,false,false,false,false,false,false, false
         );
-        replies[msg.sender][_index].push(_newMail);
+        _newMail._inbox = true;
+        _newMail._read = false;
+        if (replies[_to][_index].length == 0) {
+            mails[_to][_index]._sent = false;
+            mails[_to][_index]._inbox = true;
+            mails[_to][_index]._subject = _newMail._subject;
+        } else {
+            mails[_to][_index]._read = false;
+        }
+        replies[_from][_index].push(_newMail);
+        replies[_to][_index].push(_newMail);
     }
 
     function getReply(uint256 index) external view returns(Mail[] memory){
@@ -116,9 +134,15 @@ contract Gmail {
         
 
         Mail memory _newMail = Mail(
-            msg.sender,_to,_subject,_markdown,block.timestamp,indexTrack[_to],true,false,false,false,false,false,false,false
+            msg.sender,_to,_subject,_markdown,block.timestamp,indexTrack[_to],true,false,false,false,false,false,false,false, false
         );
         mails[_to].push(_newMail);
+
+        Mail memory _newSentMail = Mail(
+            msg.sender,_to,_subject,_markdown,block.timestamp,indexTrack[msg.sender],false,false,false,false,false,false,false,false, false
+        );
+        _newSentMail._sent = true;
+        mails[msg.sender].push(_newSentMail);
 
         if(replies[msg.sender][_index].length > 0){
             uint256 _len = replies[msg.sender][_index].length;
@@ -127,6 +151,7 @@ contract Gmail {
             }
         }
         indexTrack[_to] ++;
+        indexTrack[msg.sender] ++;
     }
 
     function inbox()   external view returns(Mail[] memory){
@@ -169,19 +194,20 @@ contract Gmail {
         return data;
     }
 
-    function sent()    external view returns(Mail[] memory){
-        
+    function sent() external view returns (Mail[] memory) {
         Mail[] storage _mails = mails[msg.sender];
         uint size = _mails.length;
         uint validSize = 0;
 
         // Count the number of valid elements
         for (uint i = 0; i < size; i++) {
-            if (_mails[i]._from == msg.sender && _mails[i]._timeStamp != 0 
-                && _mails[i]._unTracked == false
-                && _mails[i]._archive   == false
-                && _mails[i]._spam      == false
-                && _mails[i]._trash     == false
+            if (_mails[i]._sent && _mails[i]._timeStamp != 0 
+                && _mails[i]._unTracked == false &&
+                   _mails[i]._archive   == false &&
+                   _mails[i]._spam      == false &&
+                   _mails[i]._trash     == false &&
+                   _mails[i]._inbox      == false 
+
             ) {
                 validSize++;
             }
@@ -192,11 +218,12 @@ contract Gmail {
         // Add only the valid elements to the data array
         uint j = 0;
         for (uint i = 0; i < size; i++) {
-            if (_mails[i]._from == msg.sender && _mails[i]._timeStamp != 0 
-                && _mails[i]._unTracked == false
-                && _mails[i]._archive   == false
-                && _mails[i]._spam      == false
-                && _mails[i]._trash     == false
+            if (_mails[i]._sent && _mails[i]._timeStamp != 0 
+                && _mails[i]._unTracked == false &&
+                   _mails[i]._archive   == false &&
+                   _mails[i]._spam      == false &&
+                   _mails[i]._trash     == false &&
+                   _mails[i]._inbox      == false 
             ) {
                 data[j] = _mails[i];
                 j++;

@@ -1,6 +1,6 @@
 import './Editor.css'
 import { motion } from 'framer-motion'
-import { ComposeMail, forwardMail, replyMail } from '../utils/contract'
+import { ComposeMail, forwardMail, replyMail, getAddress } from '../utils/contract'
 import { useEffect, useState } from 'react'
 import { useRef } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
@@ -10,26 +10,34 @@ import EmojiPicker from 'emoji-picker-react';
 import ReactMarkdown from 'react-markdown'
 
 export default function Editor(props){
-    const variants = {
+    let variants = {
         open  :{ y: 0  ,opacity:1 },
-        closed:{ y:410  ,opacity:1 }
+        closed:{ y:600  ,opacity:1 }
     }
     const [to,setTo] = useState('')
     const [subject,setSubject] = useState('')
     const [body,setBody]       = useState('')
     const [addrValid,setAddrValid] = useState(false)
     const [see,setSee] = useState(false)
+    const [display,setDisplay] = useState(false)
+
+    setTimeout(() => {
+        setDisplay(true)
+    }, 1000);
 
     useEffect(()=>{
-        if(props.reply){
+        const action = async() => {if(props.reply){
             props.setIsOpen(true)
             if(props.selected != null){
-                setTo(props.selected.to)
-                setSubject(`Reply to ${
-                    props.selected.to.substring(0,4)+"...."+props.selected.to.slice(-4)
+                const from = await getAddress()
+                setTo(from === props.selected?.to ? props.selected?.from : props.selected?.to)
+                setSubject(`Reply from ${
+                    from.substring(0,4)+"...."+from.slice(-4)
                 }`)
             }
-        }
+        }}
+
+        action()
     },[props.reply])
 
     useEffect(()=>{
@@ -37,8 +45,8 @@ export default function Editor(props){
             props.setIsOpen(true)
             if(props.selected != null){
                 setTo()
-                setSubject(`Forward [${props.dataReply.length}:thread]`)
-                setBody(`[Mail:Ethereum] ${props.selected.subject} ${new Date(props.selected.timeStamp).toLocaleTimeString()} ...`)
+                setSubject(`Forwarded message  [${props.selected.subject}]`)
+                setBody(props.selected.markdown)
             }
         }
     },[props.forward])
@@ -53,9 +61,9 @@ export default function Editor(props){
  
     return <motion.div 
     
-        className="Editor"
+        className={`Editor ${display ? '' : 'hiden'}`}
         initial    =  {{ y:100,opacity:0}}
-        animate    =  {props.isOpen == true?variants.open:variants.closed}
+        animate    =  {props.isOpen == true ? variants.open:variants.closed}
         transition =  {!props.isOpen &&{ type: 'spring',bounce:0.1,duration: 0.1,stiffness: 100,velocity: 2}}
         >
         <div className='header-edit'>
@@ -88,7 +96,8 @@ export default function Editor(props){
             
             <div className='inputEditor mediumSans'>
                 <p className='mediumRegular'>To</p>
-                <input readOnly={props.reply ?true:false} value={to || ""} onChange={(e)=>{
+                {/* <input readOnly={props.reply ? true : false} value={to === props.selected?.to ? props.selected?.from : props.selected?.to || ""} onChange={(e)=>{ */}
+                <input readOnly={props.reply ? true : false} value={to || ""} onChange={(e)=>{
                     setTo(e.target.value);
                     if(ethers.utils.isAddress(e.target.value)){
                         setAddrValid(true)
@@ -154,7 +163,7 @@ export default function Editor(props){
                                 }
                             }else if(props.reply == true && props.forward == false){
                                 props.LoaderRef.current.continuousStart()
-                                await replyMail(props.selected.index,to,subject,body)
+                                await replyMail(props.selected.index,to,subject,body, to === props.selected?.to ? props.selected?.from : props.selected?.to)
                                 props.LoaderRef.current.complete()
                                 setTo('');
                                 setSubject('')

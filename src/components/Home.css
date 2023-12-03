@@ -4,7 +4,10 @@
     min-height:100vh;
 }
 .Home .Editor {
-    margin-bottom: 26.5%;
+    position: fixed;
+    bottom: 16px;
+    right: 0px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
 .Navbar{
     width:100%;
@@ -12,6 +15,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 10px;
 }
 .navIcon{
     padding:8px;
@@ -79,6 +83,7 @@
     -webkit-font-smoothing: antialiased;
 }
 .input input{
+    margin-top: 5px;
     width:87%;
     outline:none;
     border:none;
@@ -129,8 +134,8 @@
     display: flex;
 }
 .SideNav {
-    width: 254px;
-    background-color: rgb(17,17,17);
+    min-width: 254px;
+    background-color: #0e1120;
     height: 100vh;
 }
 .SideNav ul {
@@ -139,6 +144,14 @@
 
 .SideNav ul li {
     border-radius: 4px;
+}
+
+.SideNav ul li .mediumRegular {
+    border-radius: 4px;
+    font-family: '';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''), url('https://fonts.cdnfonts.com/s/107528/Rangile.woff') format('woff');
 }
 
 .SideNav ul li span {
@@ -162,6 +175,11 @@
     border: none;
     border: none;
     margin-bottom: 30px;
+    cursor: pointer;
+    font-family: '';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''), url('https://fonts.cdnfonts.com/s/107528/Rangile.woff') format('woff');
 }
 .composeToggle{
     border:none;
@@ -217,22 +235,23 @@ ul li span:nth-child(1){
 }
 .body-email{
     background-color:white;
-    height:100vh;
     border-radius:16px;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:flex-start;
     margin-right:1%;
-    overflow-x:hidden;
     width: calc(100vw - 254px);
     margin-left: 20px;
-    padding: 10px 20px 10px 20px;
+    padding: 0 20px 0 20px;
+    height: calc(100vh - 40px);
+    margin-top: 20px;
+    overflow: hidden;
 
 }
 .header{
     width:100%;
-    height:16%;
+    height: 100%;
 }
 .header-tools{
     display: flex;
@@ -240,6 +259,8 @@ ul li span:nth-child(1){
     justify-content: space-between;
     padding-bottom: 15px;
     border-bottom: 1px solid #EEEEEE;
+    margin: 0 -20px 0 -20px;
+    padding: 10px 20px 10px 20px;
 }
 .header-tools-row{
     margin-inline:3px;
@@ -261,6 +282,20 @@ ul li span:nth-child(1){
     background-color:rgba(128, 128, 128, 0.137);
     border-radius:100%;
 }
+.header-tools-row.disabled-action span {
+    opacity: 0.5;
+}
+.header-tools-row.disabled-action span:hover{
+    background-color: transparent;
+    cursor: default;
+}
+.delete-icon {
+    opacity: 1 !important;
+    cursor: pointer !important;
+}
+.delete-icon:hover {
+    background-color:rgba(128, 128, 128, 0.137) !important;
+}
 .tab-details{
     display:flex;
     align-items:center;
@@ -275,8 +310,14 @@ ul li span:nth-child(1){
     color:rgb(61, 61, 61);
 }
 .tab-details p{
+    position: relative;
+    top: 2px;
     font-size:14px;
     color:rgb(70, 70, 70);
+    font-family: '';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''), url('https://fonts.cdnfonts.com/s/107528/Rangile.woff') format('woff');
 }
 .tabs{
     display:grid;
@@ -326,23 +367,21 @@ ul li span:nth-child(1){
 }
 .data{
     overflow-x:hidden;
-    overflow-y:hidden;
-    margin-top:1%;
+    overflow-y:scroll;
+    margin: 0 -20px 0 -20px;
+    height: 100%;
 }
 .mail-data{
-    /* display:grid;
-    grid-template-columns:25% 1fr 7%;
-    border-bottom:.1px solid rgba(128, 128, 128, 0.13);
-    align-items:center;
-    justify-content:center; */
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 45px;
     cursor: pointer;
+    padding: 0 20px 0 20px;
 }
 .mail-data:hover{
-    box-shadow: rgba(0, 0, 0, 0.158) 0px 1px 2px;
+    /* box-shadow: rgba(0, 0, 0, 0.158) 0px 1px 2px; */
+    background-color: rgb(246,246,246);
 }
 .mail-data-start{
     display:flex;
@@ -355,6 +394,25 @@ ul li span:nth-child(1){
     font-size:19px;
     margin-right: 5px;
 }
+.mediumRegular.mark .boldSans{
+    font-family: '';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''), url('https://fonts.cdnfonts.com/s/107528/Rangile.woff') format('woff');
+}
+.mediumSans.hour{
+    font-size: 14px;
+    font-family: '';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''), url('https://fonts.cdnfonts.com/s/107528/Rangile.woff') format('woff');
+}
+.mail-data-start p{
+    font-family: '';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''), url('https://fonts.cdnfonts.com/s/107528/Rangile.woff') format('woff');
+}
 .mark{
     font-size:15px;
     font-weight:lighter;
@@ -365,6 +423,9 @@ ul li span:nth-child(1){
     margin-left: 10px;
     margin-right: 10px;
 
+    position: relative;
+    top: 3px;
+
 }
 
 .mail-data-start .boldSans{
@@ -372,10 +433,14 @@ ul li span:nth-child(1){
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    position: relative;
+    top: 3px;
 }
 .hour{
     font-size:13px;
     font-weight:lighter;
+    position: relative;
+    top: 3px;
 }
 .opp{
     color:gray;
@@ -386,23 +451,53 @@ ul li span:nth-child(1){
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    border-bottom:.1px solid rgba(128, 128, 128, 0.171);
     color:#272727;
     font-size:14px;
     padding:12px;
+    height: calc(100% - 100px);
+}
+.no-content > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.no-content img{
+    height: 90px;
+    width: 90px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #111;
+}
+
+.no-content div{
+    font-size: 18px;
+    color: #111;
+}
+
+.no-content p {
+    font-size: 18px;
+    color: #111;
 }
 .mail-data-selected{
-    background-color:#c2dbff;
+    background-color: rgb(246,246,246);
 }
 .selection-banner{
     background-color:rgba(128, 128, 128, 0.103);
-    width:100%;
     display:flex;
     align-items:center;
     justify-content:center;
     padding:16px;
     font-size:15px;
     color:rgb(77, 77, 77);
+    margin-left: -20px;
+    margin-right: -20px;
+}
+.selection-banner span {
+    color: rgb(77, 77, 77);
+    position: relative;
+    top: 1px;
+    font-size: 12px;
+    font-weight: 600;
 }
 .num{
     margin-right:.4%;
@@ -416,33 +511,39 @@ ul li span:nth-child(1){
     font-size:18px;
 }
 .bulk{
-    background-color:#0b57d0;
-    border:none;
-    color:white;
-    height:100%;
-    margin-left:12%;
-    padding-right:1%;
-    padding-left:1%;
-    border-radius:4px;
+    background-color: rgb(255, 86, 63);
+    border: none;
+    color: white;
+    height: 100%;
+    margin-left: 12%;
+    border-radius: 4px;
     cursor: pointer;
-    display:flex;
-    align-items:center;
-    justify-content:flex-start;
-    border:1px solid #0b57d0;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    height: 30px;
+    width: 30px;
+    border-radius: 30px;
 }
 .bulk-inactive{
     background-color:transparent;
     border:1px solid gray;
     color:gray;
     pointer-events:none;
-
+}
+.bulk.mediumSans span:hover{
+    cursor: pointer !important;
+    background-color: rgba(128, 128, 128, 0.137) !important;
 }
 .bulk:hover{
     background-color:white;
-    border:1px solid #0b57d0;
-    color:#0b57d0;
+    color:rgb(255, 86, 63);
 
+}
+
+.bulk .material-symbols-outlined {
+    margin-right: 0px !important; 
 }
 
 .options{
@@ -505,21 +606,10 @@ ul li span:nth-child(1){
 .tool-box-selection span {
     margin-right: 8px;
 }
-.material-symbols-outlined {
-    /* color: rgb(255,86,63) !important;
-    border-radius: 8px !important;  */
-}
-/* input[type="checkbox"] {
-    color: rgb(255,86,63) !important;
-    border-radius: 8px !important; 
-} */
-/* .mail-data-start .material-symbols-outlined {
-    color: rgb(255,86,63) !important;
-} */
 .inbox-counter{
-    opacity: 0.8 !important;
-    transform: none;
-    background-color: red;
+    opacity: 1 !important;
+    transform: none !important;
+    background-color: #FA543E;
     width: 0px;
     margin-left: auto;
     margin-right: 20px;
@@ -597,6 +687,11 @@ mark{
     padding-inline-start:3%;
 }
 
+.data {
+    overflow-y: scroll;
+    height: calc(100% - 100px);
+}
+
 .data-user{
     margin-left:6%;
 
@@ -637,7 +732,7 @@ mark{
     border-radius:23px;
 }
 .details-mail{
-    margin-top:3%;
+    margin-top:40px;
     width:100%;
     padding-inline:2%;
 }
@@ -649,6 +744,12 @@ mark{
     align-items:center;
     justify-content:flex-start;
     grid-column-gap:1.4%;
+}
+.details-header p, button { 
+    font-family: '' !important;
+    font-style: normal;
+    font-weight: 400;
+    src: local(''), url('https://fonts.cdnfonts.com/s/107528/Rangile.woff') format('woff');
 }
 .head{
     font-size:24px;
@@ -664,10 +765,10 @@ mark{
 
 }
 .badge:hover{
-    border:1px solid gray;
+    /* border:1px solid gray; */
 }
 .details-body{
-    margin-top:2%;
+    margin-top:20px;
     display:flex;
     align-items:center;
     justify-content:space-between;
@@ -679,6 +780,12 @@ mark{
     justify-content:flex-start;
     grid-column-gap:6%;
 }
+.details-body-ceil div p { 
+    font-family: '';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''), url('https://fonts.cdnfonts.com/s/107528/Rangile.woff') format('woff');
+}
 .details-body p:nth-child(1){
     font-size:14px;
 }
@@ -686,11 +793,11 @@ mark{
     font-size:12px;
     color:gray;
     text-decoration:underline;
-    cursor: pointer;
+    /* cursor: pointer; */
 }
-.to-h:hover{
+/* .to-h:hover{
     color:black;
-}
+} */
 .r-side{
     display:flex;
     align-items:center;
@@ -699,9 +806,12 @@ mark{
 .r-side span{
     font-size:19px;
     color:rgba(128, 128, 128, 0.342);
+    position: relative;
+    top: -2px;
+    left: -6px;
 }
 .text-body{
-    margin-top:3%;
+    margin-top:20px;
     font-size:14px;
     width:75%;
     white-space: pre-wrap;
@@ -710,16 +820,16 @@ mark{
     white-space: -o-pre-wrap;
     word-wrap: break-word;
     text-align:justify;
-    margin-left:5%;
+    margin-left: 60px;
 
 }
 .reply-forward{
-    margin-top:2%;
+    margin-top:20px;
     display:flex;
     align-items:center;
     justify-content:flex-start;
-    grid-column-gap:1%;
-    margin-left:5%;
+    grid-column-gap:10px;
+    margin-left:60px;
 }
 .reply-forward button{
     display:flex;
@@ -729,15 +839,228 @@ mark{
     grid-column-gap:12%;
     padding:6px;
     border:none;
-    background-color:transparent;
+    background-color:transparent !important;
     border-radius:12px;
     border:.1px solid gray;
     cursor: pointer;
+    transition: background-color 0.6 ease !important;
+    border-radius: 26px;
 }
 .reply-forward button:hover{
-    background-color:rgba(128, 128, 128, 0.164);
+    background-color: #f6f6f6 !important;
+}
+.reply-forward button:nth-child(2) {
+    width: 110px;
 }
 .details-mail{
     overflow-y:scroll;
     padding-bottom:2%;
+}
+
+.wallet-info {
+    height: 44px !important;
+    width: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid #111;
+    color: #555;
+    position: relative;
+    cursor: pointer;
+}
+
+.wallet-info-address {
+   margin-top: 5px; 
+}
+
+.wallet-info::after {
+    content: '';
+    height: 10px;
+    width: 140px;
+    bottom: -10px;
+    position: absolute;
+    background-color: transparent;
+}
+
+.wallet-info:hover .modal {
+    display: block;
+}
+
+.modal {
+    height: 264px;
+    width: 300px;
+    position: absolute;
+    top: 50px;
+    right: -1px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    padding: 20px;
+    display: none;
+    cursor: default;
+    z-index: 10000;
+}
+
+.modal:hover {
+    display: block;
+}
+
+.top {
+    display: flex;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #EEEEEE;
+}
+
+.top .text {
+    margin-left: 12px;
+    font-family: Arial,Helvetica,Verdana,sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+.top .text > div {
+    display: flex;
+    align-items: center;
+}
+
+.top .text > div div {
+    font-weight: 600;
+    font-size: 15px;
+    color: rgb(51, 51, 51) !important;
+    margin-right: 6px;
+}
+
+.top .text > div img {
+    height: 20px;
+    width: 20px;
+}
+
+.top .img {
+    height: 42px;
+    width: 42px;
+    background-color: black;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.top img {
+    height: 34px;
+    width: 34px;
+    margin-bottom: 4px;
+}
+
+.netWork {
+    font-size: 13px;
+}
+
+.address {
+    font-size: 14px;
+    color: rgb(153, 153, 153);
+    margin-top: 25px;
+    display: flex;
+    align-items: center;
+}
+
+.address div:nth-child(2) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 10px;
+    color: black;
+    cursor: pointer;
+}
+
+.address div:nth-child(2) div {
+    transition: color 0.2s ease;
+}
+
+.address div:nth-child(2) i {
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+.address div:nth-child(2):hover i::after {
+    content: "Copy";
+    position: absolute;
+    top: 18px;
+    right: 0;
+    height: 20px;
+    width: 50px;
+    color: #fff;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-size: 9px;
+}
+
+.address div:nth-child(2):hover div {
+    color: #FF563F !important;
+}
+
+
+.address div:nth-child(2):hover {
+    color: #FF563F;
+}
+
+.address div:nth-child(2) div {
+    margin-right: 10px
+}
+
+.domain div {
+    font-size: 14px;
+    color: rgb(153, 153, 153);
+    margin-top: 15px;
+    display: flex;
+    align-items: center
+}
+
+.domain div a {
+    color: rgb(85, 202, 219);
+    margin-left: 5px;
+}
+
+.logout {
+    width: 180px;
+    line-height: 35px;
+    border-radius: 35px;
+    background: rgb(245, 245, 245);
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    color: #111;
+}
+
+.bottom {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 10px;
+    margin-top: 20px;
+    border-top: 1px solid #EEEEEE;
+    opacity: 0.6;
+    transition: opacity 0.3 ease;
+}
+
+.bottom:hover {
+    opacity: 1;
+}
+.withLove {
+    color: #fff !important;
+    margin-top: auto;
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    font-family: '';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''), url('https://fonts.cdnfonts.com/s/107528/Rangile.woff') format('woff');
+}
+.toast div:nth-child(2) {
+    padding-top: 5px;
 }
