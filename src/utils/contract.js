@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import toast from "react-hot-toast";
-import ABI from "../artifacts/contracts/AVAXGods.sol/AVAXGods.json"
+import ABI from "./AVAXGods.json"
 
 const  addr = "0x9a1FC0B6AD1B11023295F6d513f17BaABF80c7cd"
 
