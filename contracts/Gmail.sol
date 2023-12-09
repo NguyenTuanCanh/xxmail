@@ -13,6 +13,7 @@ contract AVAXGods {
         string  _markdown;
         uint256 _timeStamp;
         uint256 _index  ;
+        uint256 _idx  ;
 
         bool    _inbox  ;
         bool    _starred;
@@ -23,32 +24,35 @@ contract AVAXGods {
         bool    _trash  ;
         bool    _unTracked;
         bool    _isTop;
+        address _sender;
 
     }
 
     mapping(address => mapping(uint=>Mail[]))  replies;
-    mapping(address => Mail[])  mails;
+    mapping(address => Mail[])  public mails;
     mapping(address => uint256) uid;
     mapping(address => bool)    scam;
     mapping(address => uint)    indexTrack;
+    mapping(address => uint)    idxTrack;
     mapping(address => Mail[]) sentMails;
 
-    
-    function compose(address _to,string calldata _subject,string calldata _markdown) external{
+    function compose(address _to,string calldata _subject,string calldata _markdown, uint256 time) external{
 
         uint256 index = indexTrack[msg.sender];
         uint256 idx = indexTrack[_to];
 
-        Mail memory _newMail = Mail(
-            msg.sender,_to,_subject,_markdown,block.timestamp,index,false,false,false,false,false,false,false,false, false
+        Mail memory _fromMail = Mail(
+            msg.sender,_to,_subject,_markdown,time,index,idx,false,false,false,false,false,false,false,false,false, msg.sender
         );
-        Mail memory _newSentMail = Mail(
-            msg.sender,_to,_subject,_markdown,block.timestamp,idx,false,false,false,false,false,false,false,false, false
+        Mail memory _toMail = Mail(
+            _to,msg.sender,_subject,_markdown,time,idx,index,false,false,false,false,false,false,false,false,false, msg.sender
         );
-        _newMail._inbox = true;
-        _newSentMail._sent = true;
-        mails[_to].push(_newMail);
-        mails[msg.sender].push(_newSentMail);
+
+        _fromMail._sent = true;
+        _toMail._inbox = true;
+
+        mails[msg.sender].push(_fromMail);
+        mails[_to].push(_toMail);
 
         indexTrack[msg.sender] ++;
         indexTrack[_to] ++;
@@ -109,49 +113,80 @@ contract AVAXGods {
         
     }
 
-    function reply(uint256 _index,address _to,string calldata _subject,string calldata _markdown, address _from) external{
-        Mail memory _newMail = Mail(
-            msg.sender,_to,_subject,_markdown,block.timestamp,_index,false,false,false,false,false,false,false,false, false
+    function reply(uint256 _index,address _to,string calldata _subject,string calldata _markdown, address _from, uint256 time, uint256 idx) external{
+        Mail memory _fromMail = Mail(
+            msg.sender,_to,_subject,_markdown,time,_index,idx,false,false,false,false,false,false,false,false, false, msg.sender
         );
-        _newMail._inbox = true;
-        _newMail._read = false;
-        if (replies[_to][_index].length == 0) {
-            mails[_to][_index]._sent = false;
-            mails[_to][_index]._inbox = true;
-            mails[_to][_index]._subject = _newMail._subject;
+        Mail memory _toMail = Mail(
+            _to,msg.sender,_subject,_markdown,time,idx,_index,false,false,false,false,false,false,false,false, false, msg.sender
+        );
+
+        if(mails[_to][idx]._trash == true) {
+            _toMail._inbox = true;
+            mails[_to][idx] = _toMail;
+
+            replies[_to][idx] = new Mail[](0);
+            replies[_from][_index].push(_fromMail);
+        } else if(mails[_to][idx]._sent == true) {
+            mails[_to][idx]._sent = false;
+            mails[_to][idx]._inbox = true;
+            mails[_to][idx]._subject = _fromMail._subject;
+            mails[_to][idx]._read = false;
+
+            replies[_from][_index].push(_fromMail);
+            replies[_to][idx].push(_toMail);
+            mails[_from][_index]._timeStamp = time;
+            mails[_to][idx]._timeStamp = time;
+        } else if(mails[_to][idx]._read == true) {
+            mails[_to][idx]._read = false;
+
+            replies[_from][_index].push(_fromMail);
+            replies[_to][idx].push(_toMail);
+            mails[_from][_index]._timeStamp = time;
+            mails[_to][idx]._timeStamp = time;
         } else {
-            mails[_to][_index]._read = false;
+            replies[_from][_index].push(_fromMail);
+            replies[_to][idx].push(_toMail);
+            mails[_from][_index]._timeStamp = time;
+            mails[_to][idx]._timeStamp = time;
         }
-        replies[_from][_index].push(_newMail);
-        replies[_to][_index].push(_newMail);
     }
 
-    function getReply(uint256 index) external view returns(Mail[] memory){
-        return replies[msg.sender][index];
+    function getReply(address _address, uint256 index) external view returns(Mail[] memory){
+        return replies[_address][index];
     }
 
-    function forward(address _to,string calldata _subject,string calldata _markdown,uint256 _index) external{
+    function forward(address _to,string calldata _subject,string calldata _markdown,uint256 _index, uint256 time, uint256 idx) external returns(Mail[] memory){
+
+        uint256 indexx = indexTrack[msg.sender];
+        uint256 idxx = indexTrack[_to];
         
 
-        Mail memory _newMail = Mail(
-            msg.sender,_to,_subject,_markdown,block.timestamp,indexTrack[_to],true,false,false,false,false,false,false,false, false
+        Mail memory _fromMail = Mail(
+            msg.sender,_to,_subject,_markdown,time,indexx,idxx,false,false,false,false,false,false,false,false,false, msg.sender
         );
-        mails[_to].push(_newMail);
+        Mail memory _toMail = Mail(
+            _to,msg.sender,_subject,_markdown,time,idxx,indexx,false,false,false,false,false,false,false,false,false, msg.sender
+        );
 
-        Mail memory _newSentMail = Mail(
-            msg.sender,_to,_subject,_markdown,block.timestamp,indexTrack[msg.sender],false,false,false,false,false,false,false,false, false
-        );
-        _newSentMail._sent = true;
-        mails[msg.sender].push(_newSentMail);
+        _fromMail._sent = true;
+        _toMail._inbox = true;
+
+        mails[msg.sender].push(_fromMail);
+        mails[_to].push(_toMail);
 
         if(replies[msg.sender][_index].length > 0){
             uint256 _len = replies[msg.sender][_index].length;
             for(uint256 i=0;i<_len;++i){
-                replies[_to][_index].push(replies[msg.sender][_index][i]);
+                replies[msg.sender][indexx].push(replies[msg.sender][_index][i]);
+                replies[_to][idxx].push(replies[msg.sender][_index][i]);
             }
         }
-        indexTrack[_to] ++;
+
         indexTrack[msg.sender] ++;
+        indexTrack[_to] ++;
+
+        return replies[msg.sender][_index];
     }
 
     function inbox()   external view returns(Mail[] memory){

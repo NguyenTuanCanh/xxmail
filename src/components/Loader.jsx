@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { getAuthorizedAccounts,connectAuthorizedAccounts } from '../utils/wallet'
-import { isXxxigmNetWork, addNetWork } from '../utils/contract'
+import { isXxxigmNetWork, addNetWork, checkNetWork } from '../utils/contract'
 import toast from 'react-hot-toast'
 
 export default function Loader(props){
@@ -65,7 +65,7 @@ export default function Loader(props){
             exit       =  {{ opacity:0}}
             transition =  {{ delay: .9}}
             className='sub'
-        >Exploring decentralized email services can significantly enhance both the privacy and security of your communications.</motion.p>
+        >Xmail DApp offers a user-self-hosted decentralized mailbox solution.</motion.p>
         <motion.button 
         initial    =  {{ opacity:0}}
         animate    =  {{ opacity:1 }}
@@ -74,7 +74,7 @@ export default function Loader(props){
         onClick    =  {async()=>{
             if(props.user.trim().length == 0){
                 const val = await isXxxigmNetWork()
-                !val && await addNetWork()
+                !val && await checkNetWork()
                 connectAuthorizedAccounts(props.setUser)
             }else{
                 props.refLoader.current.continuousStart()

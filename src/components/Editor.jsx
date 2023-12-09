@@ -163,7 +163,7 @@ export default function Editor(props){
                                 }
                             }else if(props.reply == true && props.forward == false){
                                 props.LoaderRef.current.continuousStart()
-                                await replyMail(props.selected.index,to,subject,body, to === props.selected?.to ? props.selected?.from : props.selected?.to)
+                                await replyMail(props.selected.index, props.selected?.to,subject,body, props.selected?.from, props.selected.idx)
                                 props.LoaderRef.current.complete()
                                 setTo('');
                                 setSubject('')

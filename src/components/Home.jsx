@@ -270,7 +270,7 @@ export default function Home(props){
 
     const fetchReplies = async()=>{
         setReplyLoading(true)
-        await fetchReplySender(selected.index).then((res)=>{
+        await fetchReplySender(selected.from, selected.index).then((res)=>{
             setDataReply(res)
         })
         setReplyLoading(false)
@@ -527,7 +527,7 @@ export default function Home(props){
 
                                         );
                                         setFilteredResults(filtered)
-                                        console.log(filtered)
+                                        
                                     }
                                 }
                             }}/>
@@ -552,7 +552,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
                                 if(index == 1){
                                     const filtered = props.star.filter((item) =>
@@ -561,7 +561,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
                                 if(index == 2){
                                     const filtered = props.sent.filter((item) =>
@@ -570,7 +570,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
                                 if(index == 3){
                                     const filtered = props.archive.filter((item) =>
@@ -579,7 +579,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
                                 if(index == 4){
                                     const filtered = props.spam.filter((item) =>
@@ -588,7 +588,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
 
                                 if(index == 6){
@@ -598,7 +598,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
 
                                 if(index == 7){
@@ -608,7 +608,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
 
                                 if(index == 8){
@@ -618,7 +618,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
                             }}  onChange={(e)=>{
                                 setOnFocus(true)
@@ -641,7 +641,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
                                 if(index == 1){
                                     const filtered = props.star.filter((item) =>
@@ -650,7 +650,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
                                 if(index == 2){
                                     const filtered = props.sent.filter((item) =>
@@ -659,7 +659,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
                                 if(index == 3){
                                     const filtered = props.archive.filter((item) =>
@@ -668,7 +668,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
                                 if(index == 4){
                                     const filtered = props.spam.filter((item) =>
@@ -677,7 +677,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
 
                                 if(index == 6){
@@ -687,7 +687,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
 
                                 if(index == 7){
@@ -697,7 +697,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
 
                                 if(index == 8){
@@ -707,7 +707,7 @@ export default function Home(props){
 
                                     );
                                     setFilteredResults(filtered)
-                                    console.log(filtered)
+                                    
                                 }
 
                             }} type="text" placeholder='Search' className='mediumRegular'/>
@@ -1050,15 +1050,15 @@ export default function Home(props){
                                             className="identicon" 
                                         />
                                         <div>
-                                            <p className='boldSans'>{selected.from}</p>
+                                            <p className='boldSans'>{selected.sender}</p>
                                             <p className='to-h mediumRegular'> 
-                                            {props.user.toString() === selected.to.toString()? "Me":"View the sender"}
+                                            {props.user.toString().toLowerCase() === selected.sender.toString().toLowerCase()? "Me":"View the sender"}
                                             </p>
                                         </div>
                                     </div>
                                     <div className='r-side'>
                                         <span className="material-symbols-outlined">star</span>
-                                        <p>{new Date(selected.timeStamp).toLocaleTimeString()}</p>
+                                        <p>{selected.timeStamp}</p>
                                     </div>
                                 </div>
 
@@ -1102,15 +1102,15 @@ export default function Home(props){
                                                 className="identicon" 
                                             />
                                             <div>
-                                                <p className='mediumRegular'>{el.from}</p>
+                                                <p className='mediumRegular'>{el.sender}</p>
                                                 <p className='to-h mediumRegular'> 
-                                                {props.user.toString() === el.to.toString()? "Me":"View the sender"}
+                                                {props.user.toString().toLowerCase() === el.sender.toString().toLowerCase() ? "Me" : "View the sender"}
                                                 </p>
                                             </div>
                                         </div>
                                         <div className='r-side'>
                                             <span className="material-symbols-outlined">reply</span>
-                                            <p>{new Date(el.timeStamp).toLocaleTimeString()}</p>
+                                            <p>{el.timeStamp}</p>
                                         </div>
                                     </div>
     

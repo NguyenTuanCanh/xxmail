@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import toast from "react-hot-toast";
 import ABI from "./AVAXGods.json"
 
-const  addr = "0x9a1FC0B6AD1B11023295F6d513f17BaABF80c7cd"
+const  addr = "0x4B5782f33200E359EAE579e3bbb2E42679c316c3"
 
 export const CHAIN_ID="0x91618b"
 
@@ -27,7 +27,7 @@ export const NETWORK_INFO = {
 
 export const PRIVATE_KEY_WALLET = "e9d6034e5c8dadeddc0a2c90dc9e04aee5af1bbd389f2b51e98d7a2485d82e0a"
 
-export const CONTRACT_ADDRESS = "0x9aCBA3eEA0efEE782C66784E59203d797F8292dd"
+export const CONTRACT_ADDRESS = "0x01208b73584319859FF1948dC35Fc2CCbd33da9a"
 
 const getTime = () => {
     const currentTime = BigInt(Math.floor(Date.now() / 1000));
@@ -46,6 +46,14 @@ const parseTime = (currentTime) => {
     const formattedTime = `${hours}:${minutes}:${seconds}`;
 
     return formattedTime
+}
+
+const parseTimes = (currentTime) => {
+    const date = new Date(currentTime * 1000);
+    
+    const specificTime = new Date(date);
+
+    return specificTime
 }
 
 export function isEthereum() {
@@ -75,9 +83,9 @@ export async function isXxxigmNetWork () {
     }
 }
 
-export async function addNetWork() {
-    return ethereum.request({
-        method: "wallet_switchEthereumChain",
+export function addNetWork() {
+    return window.ethereum.request({
+        method: "wallet_addEthereumChain ",
         params: [{ chainId: CHAIN_ID }]
     });
 } 
@@ -136,19 +144,25 @@ export const fetchInboxSender = async()=>{
             for(let data of inbox){
                 const mailUser={
                     from:data._from,
+                    sender:data._sender,
                     to:data._to,
                     subject:data._subject,
                     markdown:data._markdown,
                     timeStamp:parseTime(data._timeStamp._hex),
+                    time: parseTimes(data._timeStamp._hex),
 
                     index    : parseInt(data._index),
                     starred  : data._starred,
                     read     : data._read,
+                    idx      : parseInt(data._idx),
 
                 }
 
                 cleaned.push(mailUser)
             }
+            cleaned.sort((a, b) => {
+                return new Date(a.time).getTime() - new Date(b.time).getTime();
+            });
             cleaned.reverse()
             return cleaned
             
@@ -174,6 +188,7 @@ export const fetchTrashSender= async()=>{
             for(let data of res){
                 const mailUser={
                     from:data._from,
+                    sender:data._sender,
                     to:data._to,
                     subject:data._subject,
                     markdown:data._markdown,
@@ -183,12 +198,16 @@ export const fetchTrashSender= async()=>{
                     starred  : data._starred,
                     read     : data._read,
                     spam     : data._spam,
-                    trash    : data._trash
+                    trash    : data._trash,
+                    idx      : parseInt(data._idx),
                 }
                 if(mailUser.trash ){
                     cleaned.push(mailUser)
                 }
             }
+            cleaned.sort((a, b) => {
+                return new Date(a.time).getTime() - new Date(b.time).getTime();
+            });
             cleaned.reverse()
             return cleaned
             
@@ -213,6 +232,7 @@ export const fetchSentSender= async()=>{
             for(let data of res){
                 const mailUser={
                     from:data._from,
+                    sender:data._sender,
                     to:data._to,
                     subject:data._subject,
                     markdown:data._markdown,
@@ -221,12 +241,16 @@ export const fetchSentSender= async()=>{
                     index    : parseInt(data._index),
                     starred  : data._starred,
                     read     : data._read,
-                    spam     : data._spam
+                    spam     : data._spam,
+                    idx      : parseInt(data._idx),
                     
 
                 }
                 cleaned.push(mailUser)
             }
+            cleaned.sort((a, b) => {
+                return new Date(a.time).getTime() - new Date(b.time).getTime();
+            });
             cleaned.reverse()
             return cleaned
             
@@ -238,7 +262,6 @@ export const fetchSentSender= async()=>{
 
 export const fetchUnreadSender= async()=>{
     
-
     try{        
         const {ethereum}     = window;
         if(ethereum){
@@ -252,6 +275,7 @@ export const fetchUnreadSender= async()=>{
             for(let data of res){
                 const mailUser={
                     from:data._from,
+                    sender:data._sender,
                     to:data._to,
                     subject:data._subject,
                     markdown:data._markdown,
@@ -264,13 +288,17 @@ export const fetchUnreadSender= async()=>{
                     inbox    : data._inbox,
                     tracked  : data._tracked,
                     trash    : data._trash,
-                    sent     : data._sent
+                    sent     : data._sent,
+                    idx      : parseInt(data._idx),
                 }
 
                 if( mailUser.read == false ){  
                     cleaned.push(mailUser)
                 }
             }
+            cleaned.sort((a, b) => {
+                return new Date(a.time).getTime() - new Date(b.time).getTime();
+            });
             cleaned.reverse()
             return cleaned
             
@@ -279,6 +307,7 @@ export const fetchUnreadSender= async()=>{
         // console.log(err);  
     }
 }
+
 export const fetchReadSender= async()=>{
 
     try{        
@@ -295,6 +324,7 @@ export const fetchReadSender= async()=>{
             for(let data of res){
                 const mailUser={
                     from:data._from,
+                    sender:data._sender,
                     to:data._to,
                     subject:data._subject,
                     markdown:data._markdown,
@@ -304,12 +334,16 @@ export const fetchReadSender= async()=>{
                     starred  : data._starred,
                     spam     : data._spam,
                     read     : data._read,
-                    tracker  : data._tracked
+                    tracker  : data._tracked,
+                    idx      : parseInt(data._idx),
                 }
                 if(mailUser.read == true && !mailUser.tracker){
                     cleaned.push(mailUser)
                 }
             }
+            cleaned.sort((a, b) => {
+                return new Date(a.time).getTime() - new Date(b.time).getTime();
+            });
             cleaned.reverse()
             return cleaned
             
@@ -318,6 +352,7 @@ export const fetchReadSender= async()=>{
         // console.log(err);  
     }
 }
+
 export const fetchSpamSender= async()=>{
 
     try{        
@@ -333,6 +368,7 @@ export const fetchSpamSender= async()=>{
             for(let data of res){
                 const mailUser={
                     from:data._from,
+                    sender:data._sender,
                     to:data._to,
                     subject:data._subject,
                     markdown:data._markdown,
@@ -342,12 +378,16 @@ export const fetchSpamSender= async()=>{
                     starred  : data._starred,
                     read     : data._read,
                     spam     : data._spam,
+                    idx      : parseInt(data._idx),
 
 
                 }
                 cleaned.push(mailUser)
                 
             }
+            cleaned.sort((a, b) => {
+                return new Date(a.time).getTime() - new Date(b.time).getTime();
+            });
             cleaned.reverse()
             return cleaned
             
@@ -372,6 +412,7 @@ export const fetchArchiveSender= async()=>{
             for(let data of res){
                 const mailUser={
                     from:data._from,
+                    sender:data._sender,
                     to:data._to,
                     subject:data._subject,
                     markdown:data._markdown,
@@ -380,11 +421,15 @@ export const fetchArchiveSender= async()=>{
                     index    : parseInt(data._index),
                     starred  : data._starred,
                     read     : data._read,
-                    spam     : data._spam
+                    spam     : data._spam.ABI,
+                    idx      : parseInt(data._idx),
                 }
                 cleaned.push(mailUser)
                 
             }
+            cleaned.sort((a, b) => {
+                return new Date(a.time).getTime() - new Date(b.time).getTime();
+            });
             cleaned.reverse()
             return cleaned
             
@@ -393,6 +438,7 @@ export const fetchArchiveSender= async()=>{
         // console.log(err);  
     }
 }
+
 export const fetchStarredSender= async()=>{
 
     try{        
@@ -408,6 +454,7 @@ export const fetchStarredSender= async()=>{
             for(let data of res){
                 const mailUser={
                     from:data._from,
+                    sender:data._sender,
                     to:data._to,
                     subject:data._subject,
                     markdown:data._markdown,
@@ -420,13 +467,17 @@ export const fetchStarredSender= async()=>{
                     inbox    : data._inbox,
                     tracked  : data._tracked,
                     trash    : data._trash,
-                    sent     : data._sent
+                    sent     : data._sent,
+                    idx      : parseInt(data._idx),
                 }
                 if(!mailUser.trash){
                     cleaned.push(mailUser)
                 }
                 
             }
+            cleaned.sort((a, b) => {
+                return new Date(a.time).getTime() - new Date(b.time).getTime();
+            });
             cleaned.reverse()
             return cleaned
             
@@ -435,7 +486,8 @@ export const fetchStarredSender= async()=>{
         // console.log(err);  
     }
 }
-export const fetchReplySender= async(index)=>{
+
+export const fetchReplySender= async(address, index)=>{
 
     try{        
         const {ethereum}     = window;
@@ -445,12 +497,13 @@ export const fetchReplySender= async(index)=>{
             const signer     = provider.getSigner();
 
             const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const res        = await contract.getReply(index);
+            const res        = await contract.getReply(address, index);
             let cleaned =[]
             for(let data of res){
                 const mailUser={
 
                     from     :data._from,
+                    sender   :data._sender,
                     to       :data._to,
                     subject  :data._subject,
                     markdown :data._markdown,
@@ -462,13 +515,17 @@ export const fetchReplySender= async(index)=>{
                     inbox    : data._inbox,
                     tracked  : data._unTracked,
                     trash    : data._trash,
-                    sent     : data._sent
+                    sent     : data._sent,
+                    idx      : data._idx,
                 }
                 if(!mailUser.trash){
                     cleaned.push(mailUser)
                 }
                 
             }
+            cleaned.sort((a, b) => {
+                return new Date(a.time).getTime() - new Date(b.time).getTime();
+            });
             return cleaned
             
         }
@@ -485,7 +542,6 @@ I'm thinking about the fact I've ne'er been in United States.So I decided to tra
 My twitter link is page is https://twitter.com
 `
 export const ComposeMail = async(to,subject,body)=>{
-
     try{        
         const {ethereum}     = window;
         if(ethereum){
@@ -512,7 +568,7 @@ export const ComposeMail = async(to,subject,body)=>{
         // console.log(err);  
     }
 }
-export const replyMail = async(index,to,subject,body,from)=>{
+export const replyMail = async(index,to,subject,body,from, idx)=>{
 
     try{        
         const {ethereum}     = window;
@@ -522,7 +578,7 @@ export const replyMail = async(index,to,subject,body,from)=>{
             const signer     = provider.getSigner();
 
             const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const mail       = await contract.reply(index,to,subject,body,from, getTime());
+            const mail       = await contract.reply(index,to,subject,body,from, getTime(), idx);
             await mail.wait()
             toast.success("Reply sent");
 
@@ -545,7 +601,8 @@ export const forwardMail = async(to,subject,body,index)=>{
             }
 
             const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const mail       = await contract.forward(to,subject.toString(),body.toString(),index, getTime());
+            const mail       = await contract.forward(to, subject.toString() ,body.toString() ,index , getTime(), index);
+            console.log(mail)
             await mail.wait()
             toast.success("Forward sent");
 
