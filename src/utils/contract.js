@@ -2,13 +2,13 @@ import { ethers } from "ethers";
 import toast from "react-hot-toast";
 import ABI from "./AVAXGods.json"
 
-const  addr = "0x4B5782f33200E359EAE579e3bbb2E42679c316c3"
+const  addr = "0xa1c86be894BED6E59d92213F58807d37546d854C"
 
-export const CHAIN_ID="0x91618b"
+export const CHAIN_ID="0x646c87"
 
-export const CHAIN_NAME="Dymension"
+export const CHAIN_NAME="TrongNam"
 
-export const SYMBOL="DAS"
+export const SYMBOL="TNW"
 
 export const NATIVE_CURRENCY={
     name: CHAIN_NAME,
@@ -16,7 +16,7 @@ export const NATIVE_CURRENCY={
     decimals: 18,
 }
 
-export const RPC_URLS=['https://froopyland.dymension.xyz/8/xxxigm_9527691-1/evmrpc']
+export const RPC_URLS=['https://froopyland.dymension.xyz/11/trongnam_6581383-1/evmrpc']
 
 export const NETWORK_INFO = {
     chainId: CHAIN_ID,
@@ -25,9 +25,11 @@ export const NETWORK_INFO = {
     rpcUrls: RPC_URLS,
 }
 
-export const PRIVATE_KEY_WALLET = "e9d6034e5c8dadeddc0a2c90dc9e04aee5af1bbd389f2b51e98d7a2485d82e0a"
+// export const PRIVATE_KEY_WALLET = "e9d6034e5c8dadeddc0a2c90dc9e04aee5af1bbd389f2b51e98d7a2485d82e0a"
+export const PRIVATE_KEY_WALLET = "a8fa1cf6e7de870c695aa0a28e1d4f432697b1dfe54fabc8a7a6f8451ad3722f"
 
-export const CONTRACT_ADDRESS = "0x01208b73584319859FF1948dC35Fc2CCbd33da9a"
+// export const CONTRACT_ADDRESS = "0x01208b73584319859FF1948dC35Fc2CCbd33da9a"
+export const CONTRACT_ADDRESS = "0xa1c86be894BED6E59d92213F58807d37546d854C"
 
 const getTime = () => {
     const currentTime = BigInt(Math.floor(Date.now() / 1000));

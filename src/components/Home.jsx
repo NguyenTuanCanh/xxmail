@@ -510,7 +510,7 @@ export default function Home(props){
                 </ul>
                 }
 
-                <div className='withLove'>Made with ❤️ by xxxigm</div>
+                <div className='withLove'>Made with ❤️ by TrongNam</div>
                 
             </div>
             <div className='body-email'>
@@ -769,7 +769,7 @@ export default function Home(props){
                                         <div>MetaMask</div>
                                         <img src={metamask } width={26} alt="" />
                                     </div>
-                                    <div className='netWork'>Xxxigm</div>
+                                    <div className='netWork'>TrongNam</div>
                                 </div>
                             </div>
                             <div className='address'>
@@ -780,13 +780,13 @@ export default function Home(props){
                                 </div>
                             </div>
                             <div className='domain'>
-                                <div>NFT Domain: <a href="https://dymension-domain.netlify.app/" target="_blank">Target</a></div>
+                                <div>NFT: <span>Comming soon</span></div>
                             </div>
                             <div className='domain'>
-                                <div>Game The Airman: <a href="https://the-airman-dymension.netlify.app/" target="_blank">Target</a></div>
+                                <div>GameFi: <span>Comming soon</span></div>
                             </div>
                             <div className='domain'>
-                                <div>Xxxigm Ecosystem: <a href="https://the-airman-dymension.netlify.app/" target="_blank">Target</a></div>
+                                <div>TrongNam Ecosystem: <a href="https://the-airman-dymension.netlify.app/" target="_blank">Target</a></div>
                             </div>
                             <div className='bottom'>
                                 <div className='logout' onClick={ onLogout } >Logout</div>
