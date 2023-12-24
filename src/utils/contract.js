@@ -1,8 +1,9 @@
 import { ethers } from "ethers";
+import CryptoJS from "crypto-js";
 import toast from "react-hot-toast";
 import ABI from "./AVAXGods.json"
 
-const  addr = "0xa1c86be894BED6E59d92213F58807d37546d854C"
+const  addr = "0x6c85e913F93CED2405D3dEa017fdB593cB36434e"
 
 export const CHAIN_ID="0x646c87"
 
@@ -25,11 +26,10 @@ export const NETWORK_INFO = {
     rpcUrls: RPC_URLS,
 }
 
-// export const PRIVATE_KEY_WALLET = "e9d6034e5c8dadeddc0a2c90dc9e04aee5af1bbd389f2b51e98d7a2485d82e0a"
-export const PRIVATE_KEY_WALLET = "a8fa1cf6e7de870c695aa0a28e1d4f432697b1dfe54fabc8a7a6f8451ad3722f"
-
 // export const CONTRACT_ADDRESS = "0x01208b73584319859FF1948dC35Fc2CCbd33da9a"
 export const CONTRACT_ADDRESS = "0xa1c86be894BED6E59d92213F58807d37546d854C"
+
+const KEY = "trongnam";
 
 const getTime = () => {
     const currentTime = BigInt(Math.floor(Date.now() / 1000));
@@ -148,8 +148,8 @@ export const fetchInboxSender = async()=>{
                     from:data._from,
                     sender:data._sender,
                     to:data._to,
-                    subject:data._subject,
-                    markdown:data._markdown,
+                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
+                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
                     timeStamp:parseTime(data._timeStamp._hex),
                     time: parseTimes(data._timeStamp._hex),
 
@@ -192,8 +192,8 @@ export const fetchTrashSender= async()=>{
                     from:data._from,
                     sender:data._sender,
                     to:data._to,
-                    subject:data._subject,
-                    markdown:data._markdown,
+                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
+                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
                     timeStamp:parseTime(data._timeStamp._hex),
 
                     index    : parseInt(data._index),
@@ -236,8 +236,8 @@ export const fetchSentSender= async()=>{
                     from:data._from,
                     sender:data._sender,
                     to:data._to,
-                    subject:data._subject,
-                    markdown:data._markdown,
+                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
+                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
                     timeStamp:parseTime(data._timeStamp._hex),
                     
                     index    : parseInt(data._index),
@@ -279,8 +279,8 @@ export const fetchUnreadSender= async()=>{
                     from:data._from,
                     sender:data._sender,
                     to:data._to,
-                    subject:data._subject,
-                    markdown:data._markdown,
+                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
+                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
                     timeStamp:parseTime(data._timeStamp._hex),
                     
                     index    : parseInt(data._index),
@@ -328,8 +328,8 @@ export const fetchReadSender= async()=>{
                     from:data._from,
                     sender:data._sender,
                     to:data._to,
-                    subject:data._subject,
-                    markdown:data._markdown,
+                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
+                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
                     timeStamp:parseTime(data._timeStamp._hex),
                     
                     index    : parseInt(data._index),
@@ -372,8 +372,8 @@ export const fetchSpamSender= async()=>{
                     from:data._from,
                     sender:data._sender,
                     to:data._to,
-                    subject:data._subject,
-                    markdown:data._markdown,
+                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
+                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
                     timeStamp:parseTime(data._timeStamp._hex),
 
                     index    : parseInt(data._index),
@@ -416,8 +416,8 @@ export const fetchArchiveSender= async()=>{
                     from:data._from,
                     sender:data._sender,
                     to:data._to,
-                    subject:data._subject,
-                    markdown:data._markdown,
+                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
+                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
                     timeStamp:parseTime(data._timeStamp._hex),
                     
                     index    : parseInt(data._index),
@@ -458,8 +458,8 @@ export const fetchStarredSender= async()=>{
                     from:data._from,
                     sender:data._sender,
                     to:data._to,
-                    subject:data._subject,
-                    markdown:data._markdown,
+                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
+                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
                     timeStamp:parseTime(data._timeStamp._hex),
 
                     index    : parseInt(data._index),
@@ -507,8 +507,8 @@ export const fetchReplySender= async(address, index)=>{
                     from     :data._from,
                     sender   :data._sender,
                     to       :data._to,
-                    subject  :data._subject,
-                    markdown :data._markdown,
+                    subject  :CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
+                    markdown :CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
                     timeStamp:parseTime(data._timeStamp._hex),
                     index    : data._index,
                     starred  : data._starred,
@@ -536,13 +536,6 @@ export const fetchReplySender= async(address, index)=>{
     }
 }
 
-
-const body = `
-I'm thinking about the fact I've ne'er been in United States.So I decided to travel with you because It can be the best experience of my life dude What do you think about it
-
-
-My twitter link is page is https://twitter.com
-`
 export const ComposeMail = async(to,subject,body)=>{
     try{        
         const {ethereum}     = window;
@@ -558,8 +551,8 @@ export const ComposeMail = async(to,subject,body)=>{
             const contract   = new ethers.Contract(addr,ABI.abi,signer);
             const mail       = await contract.compose(
                 to,
-                subject,
-                body,
+                CryptoJS.AES.encrypt(subject, KEY).toString(),
+                CryptoJS.AES.encrypt(body, KEY).toString(),
                 getTime()
             );
             await mail.wait()
@@ -580,7 +573,7 @@ export const replyMail = async(index,to,subject,body,from, idx)=>{
             const signer     = provider.getSigner();
 
             const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const mail       = await contract.reply(index,to,subject,body,from, getTime(), idx);
+            const mail       = await contract.reply(index,to,CryptoJS.AES.encrypt(subject, KEY).toString(),CryptoJS.AES.encrypt(body, KEY).toString(),from, getTime(), idx);
             await mail.wait()
             toast.success("Reply sent");
 
@@ -603,8 +596,7 @@ export const forwardMail = async(to,subject,body,index)=>{
             }
 
             const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const mail       = await contract.forward(to, subject.toString() ,body.toString() ,index , getTime(), index);
-            console.log(mail)
+            const mail       = await contract.forward(to, CryptoJS.AES.encrypt(subject, KEY).toString() ,CryptoJS.AES.encrypt(body, KEY).toString(), index , getTime(), index);
             await mail.wait()
             toast.success("Forward sent");
 
