@@ -769,7 +769,7 @@ export default function Home(props){
                                         <div>MetaMask</div>
                                         <img src={metamask } width={26} alt="" />
                                     </div>
-                                    <div className='netWork'>TrongNam</div>
+                                    <div className='netWork'>Scroll Mainnet</div>
                                 </div>
                             </div>
                             <div className='address'>
@@ -786,7 +786,7 @@ export default function Home(props){
                                 <div>GameFi: <span>Comming soon</span></div>
                             </div>
                             <div className='domain'>
-                                <div>TrongNam Ecosystem: <a href="https://the-airman-dymension.netlify.app/" target="_blank">Target</a></div>
+                                <div>Defi <span>Comming soon</span></div>
                             </div>
                             <div className='bottom'>
                                 <div className='logout' onClick={ onLogout } >Logout</div>
