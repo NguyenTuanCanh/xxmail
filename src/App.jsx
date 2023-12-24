@@ -260,7 +260,6 @@ function App() {
        <ReactTooltip
         anchorId="info-contract"
         place="bottom"
-        content="Live on TrongNam testnet"
       />
 
       <BrowserRouter>
