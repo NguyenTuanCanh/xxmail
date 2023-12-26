@@ -786,7 +786,7 @@ export default function Home(props){
                                 <div>GameFi: <span>Comming soon</span></div>
                             </div>
                             <div className='domain'>
-                                <div>TrongNam Ecosystem: <a href="https://the-airman-dymension.netlify.app/" target="_blank">Target</a></div>
+                                <div>TrongNam Ecosystem: <a href="https://trongnam-ecosystem.netlify.app/" target="_blank">Target</a></div>
                             </div>
                             <div className='bottom'>
                                 <div className='logout' onClick={ onLogout } >Logout</div>
