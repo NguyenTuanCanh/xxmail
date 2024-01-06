@@ -510,7 +510,7 @@ export default function Home(props){
                 </ul>
                 }
 
-                <div className='withLove'>Made with ❤️ by TrongNam</div>
+                <div className='withLove'>Made with ❤️ by Xxxigm</div>
                 
             </div>
             <div className='body-email'>
@@ -769,7 +769,7 @@ export default function Home(props){
                                         <div>MetaMask</div>
                                         <img src={metamask } width={26} alt="" />
                                     </div>
-                                    <div className='netWork'>TrongNam</div>
+                                    <div className='netWork'>Xxxigm</div>
                                 </div>
                             </div>
                             <div className='address'>
@@ -786,7 +786,7 @@ export default function Home(props){
                                 <div>GameFi: <span>Comming soon</span></div>
                             </div>
                             <div className='domain'>
-                                <div>TrongNam Ecosystem: <a href="https://trongnam-ecosystem.netlify.app/" target="_blank">Target</a></div>
+                                <div>Faucet: <a href="https://xxxigm-faucet.netlify.app/" target="_blank">Target</a></div>
                             </div>
                             <div className='bottom'>
                                 <div className='logout' onClick={ onLogout } >Logout</div>
