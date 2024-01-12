@@ -3,13 +3,13 @@ import CryptoJS from "crypto-js";
 import toast from "react-hot-toast";
 import ABI from "./AVAXGods.json"
 
-const  addr = "0xc5D747e0C24c39513bc9c8edd57Dc10e0792a458"
+const  addr = "0xc19b370E69B72e4c6bAf96742309A4576531360c"
 
-export const CHAIN_ID="0x28c5f"
+export const CHAIN_ID="0x138d5"
 
-export const CHAIN_NAME="Taiko Jolnir L2"
+export const CHAIN_NAME="Berachain Artio"
 
-export const SYMBOL="ETH"
+export const SYMBOL="BERA"
 
 export const NATIVE_CURRENCY={
     name: CHAIN_NAME,
@@ -17,14 +17,14 @@ export const NATIVE_CURRENCY={
     decimals: 18,
 }
 
-export const RPC_URLS=['https://rpc.jolnir.taiko.xyz']
+export const RPC_URLS=['https://artio.rpc.berachain.com/']
 
 export const NETWORK_INFO = {
     chainId: CHAIN_ID,
     chainName: CHAIN_NAME,
     nativeCurrency: NATIVE_CURRENCY,
     rpcUrls: RPC_URLS,
-    blockExplorerUrls: ['https://explorer.jolnir.taiko.xyz'],
+    blockExplorerUrls: ['https://artio.beratrail.io/'],
 }
 
 // export const CONTRACT_ADDRESS = "0x01208b73584319859FF1948dC35Fc2CCbd33da9a"

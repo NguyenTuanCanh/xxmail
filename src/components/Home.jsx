@@ -786,7 +786,7 @@ export default function Home(props){
                                 <div>GameFi: <span>Comming soon</span></div>
                             </div>
                             <div className='domain'>
-                                <div>Faucet: <a href="https://xxxigm-faucet.netlify.app/" target="_blank">Target</a></div>
+                                <div>Faucet: <a href="https://artio.faucet.berachain.com/" target="_blank">Target</a></div>
                             </div>
                             <div className='bottom'>
                                 <div className='logout' onClick={ onLogout } >Logout</div>
