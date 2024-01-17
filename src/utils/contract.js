@@ -3,13 +3,13 @@ import CryptoJS from "crypto-js";
 import toast from "react-hot-toast";
 import ABI from "./AVAXGods.json"
 
-const  addr = "0xc19b370E69B72e4c6bAf96742309A4576531360c"
+const  addr = "0x40e8c904b6AEF6b10209EFA92FC0cEFB1030adaD"
 
-export const CHAIN_ID="0x138d5"
+export const CHAIN_ID="0x1b59"
 
-export const CHAIN_NAME="Berachain Artio"
+export const CHAIN_NAME="ZetaChain Athens 3 Testnet"
 
-export const SYMBOL="BERA"
+export const SYMBOL="ZETA"
 
 export const NATIVE_CURRENCY={
     name: CHAIN_NAME,
@@ -17,14 +17,14 @@ export const NATIVE_CURRENCY={
     decimals: 18,
 }
 
-export const RPC_URLS=['https://artio.rpc.berachain.com/']
+export const RPC_URLS=['https://zetachain-athens-evm.blockpi.network/v1/rpc/public']
 
 export const NETWORK_INFO = {
     chainId: CHAIN_ID,
     chainName: CHAIN_NAME,
     nativeCurrency: NATIVE_CURRENCY,
     rpcUrls: RPC_URLS,
-    blockExplorerUrls: ['https://artio.beratrail.io/'],
+    blockExplorerUrls: ['https://explorer.zetachain.com/'],
 }
 
 // export const CONTRACT_ADDRESS = "0x01208b73584319859FF1948dC35Fc2CCbd33da9a"

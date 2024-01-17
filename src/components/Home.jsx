@@ -510,7 +510,7 @@ export default function Home(props){
                 </ul>
                 }
 
-                <div className='withLove'>Made with ❤️ by Empirex</div>
+                <div className='withLove'>Made with ❤️ by Xxxigm</div>
                 
             </div>
             <div className='body-email'>
@@ -769,7 +769,7 @@ export default function Home(props){
                                         <div>MetaMask</div>
                                         <img src={metamask } width={26} alt="" />
                                     </div>
-                                    <div className='netWork'>Empirex</div>
+                                    <div className='netWork'>Xxxigm</div>
                                 </div>
                             </div>
                             <div className='address'>
