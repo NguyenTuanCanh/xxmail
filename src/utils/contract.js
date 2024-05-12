@@ -3,13 +3,13 @@ import CryptoJS from "crypto-js";
 import toast from "react-hot-toast";
 import ABI from "./AVAXGods.json"
 
-const  addr = "0x6c85e913F93CED2405D3dEa017fdB593cB36434e"
+const  addr = "0x39ad7D7ed0b2b1391f284126e427a7Aff3F324D0"
 
-export const CHAIN_ID="0x646c87"
+export const CHAIN_ID="0x40d8"
 
-export const CHAIN_NAME="TrongNam"
+export const CHAIN_NAME="0G"
 
-export const SYMBOL="TNW"
+export const SYMBOL="A0GI"
 
 export const NATIVE_CURRENCY={
     name: CHAIN_NAME,
@@ -17,7 +17,7 @@ export const NATIVE_CURRENCY={
     decimals: 18,
 }
 
-export const RPC_URLS=['https://froopyland.dymension.xyz/11/trongnam_6581383-1/evmrpc']
+export const RPC_URLS=['https://rpc-testnet.0g.ai/']
 
 export const NETWORK_INFO = {
     chainId: CHAIN_ID,
@@ -27,7 +27,7 @@ export const NETWORK_INFO = {
 }
 
 // export const CONTRACT_ADDRESS = "0x01208b73584319859FF1948dC35Fc2CCbd33da9a"
-export const CONTRACT_ADDRESS = "0xa1c86be894BED6E59d92213F58807d37546d854C"
+export const CONTRACT_ADDRESS = "0x39ad7D7ed0b2b1391f284126e427a7Aff3F324D0"
 
 const KEY = "trongnam";
 
