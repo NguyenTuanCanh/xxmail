@@ -271,12 +271,18 @@ ul li span:nth-child(1){
     margin-left: -7px;
 
 }
+@keyframes example {
+    from {opacity: 0 !important;}
+    to {opacity: 1 !important;}
+}
 .header-tools-row span{
     font-size:19px;
     cursor: pointer;
     margin-inline-end: 1%;
     transition:.1s;
     padding:6px;
+    animation-name: example;
+    animation-duration: 4s; 
 }
 .header-tools-row span:hover,.tab-details span:hover{
     background-color:rgba(128, 128, 128, 0.137);

@@ -3,13 +3,13 @@ import CryptoJS from "crypto-js";
 import toast from "react-hot-toast";
 import ABI from "./AVAXGods.json"
 
-const  addr = "0x39ad7D7ed0b2b1391f284126e427a7Aff3F324D0"
+const  addr = "0xA05cb0F5A5D824757b805d6aeD392b4c3ada82FE"
 
-export const CHAIN_ID="0x40d8"
+export const CHAIN_ID="0x6b6b7274"
 
-export const CHAIN_NAME="0G"
+export const CHAIN_NAME="Kakarot Sepolia"
 
-export const SYMBOL="A0GI"
+export const SYMBOL="ETH"
 
 export const NATIVE_CURRENCY={
     name: CHAIN_NAME,
@@ -17,19 +17,20 @@ export const NATIVE_CURRENCY={
     decimals: 18,
 }
 
-export const RPC_URLS=['https://rpc-testnet.0g.ai/']
+export const RPC_URLS=['https://sepolia-rpc.kakarot.org/']
+
+export const BLOCK_EXPLORER_URL=['https://sepolia.kakarotscan.org']
 
 export const NETWORK_INFO = {
     chainId: CHAIN_ID,
     chainName: CHAIN_NAME,
     nativeCurrency: NATIVE_CURRENCY,
     rpcUrls: RPC_URLS,
+    blockExplorerUrls: BLOCK_EXPLORER_URL
 }
 
-// export const CONTRACT_ADDRESS = "0x01208b73584319859FF1948dC35Fc2CCbd33da9a"
-export const CONTRACT_ADDRESS = "0x39ad7D7ed0b2b1391f284126e427a7Aff3F324D0"
 
-const KEY = "trongnam";
+const KEY = "xxxigm";
 
 const getTime = () => {
     const currentTime = BigInt(Math.floor(Date.now() / 1000));

@@ -230,6 +230,8 @@ export default function Home(props){
     const [replyLoading,setReplyLoading] = useState(false)
     const [dataReply,setDataReply]  = useState([])
 
+    
+
 
     const tabContent = {
         "primary": onFocus ? filteredResults : props.inbox,
@@ -242,13 +244,15 @@ export default function Home(props){
     const navigate      = useNavigate()
 
     const tabController = ()=>{
-        if(tab == 0){
-            return "primary"
-        }else if(tab == 1){
-            return "promotions"
-        }else{
-            return "social"
-        }
+        return "primary"
+
+        // if(tab == 0){
+        //     return "primary"
+        // }else if(tab == 1){
+        //     return "promotions"
+        // }else{
+        //     return "social"
+        // }
     }
     const ref = useRef(null);
 
@@ -785,9 +789,9 @@ export default function Home(props){
                             <div className='domain'>
                                 <div>GameFi: <span>Comming soon</span></div>
                             </div>
-                            {/* <div className='domain'>
-                                <div>TrongNam Ecosystem: <a href="https://trongnam-ecosystem.netlify.app/" target="_blank">Target</a></div>
-                            </div> */}
+                            <div className='domain'>
+                                <div>Faucet: <a href="https://sepolia-faucet.kakarot.org/" target="_blank">Target</a></div>
+                            </div>
                             <div className='bottom'>
                                 <div className='logout' onClick={ onLogout } >Logout</div>
                             </div>
@@ -810,7 +814,7 @@ export default function Home(props){
                                     arrow_back
                                 </span>
                             }
-                            {   selected == null &&
+                            {   selected === null &&
                                 <span style={onSelect ? {color:"rgb(255,86,63)"}:{}} onClick={()=>{
                                     if(selected == null){
                                             setOnSelect(!onSelect)
