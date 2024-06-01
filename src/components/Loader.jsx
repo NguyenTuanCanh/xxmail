@@ -42,23 +42,6 @@ export default function Loader(props){
         >
             <motion.img src={animated} width={220}/>
         </motion.div>
-
-        {/* <motion.div 
-            initial    =  {{ opacity:0}}
-            animate    =  {{ opacity:1 }}
-            exit       =  {{ opacity:0}}
-            transition =  {{ delay: .8,type: 'spring',bounce:1,duration: 0.3,stiffness: 100,velocity: 6}}
-            className='mediumSans logo-txt'>
-            <motion.div
-        
-                className='darken'>
-                Node
-            </motion.div> 
-            <motion.div
-                transition =  {{ delay:.8,type: 'spring',bounce:1,duration: 0.3,stiffness: 100,velocity: 6}}
-            > Mail
-            </motion.div>
-        </motion.div> */}
         <motion.p 
             initial    =  {{ opacity:0}}
             animate    =  {{ opacity:1 }}

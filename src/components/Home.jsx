@@ -229,9 +229,11 @@ export default function Home(props){
     const [forward,setForward] = useState(false)
     const [replyLoading,setReplyLoading] = useState(false)
     const [dataReply,setDataReply]  = useState([])
+    const [isShow, setIsShow] = useState(false)
 
-    
-
+    setTimeout(() => {
+        setIsShow(true)
+    }, 2000);
 
     const tabContent = {
         "primary": onFocus ? filteredResults : props.inbox,
@@ -343,7 +345,7 @@ export default function Home(props){
             LoaderRef={props.LoaderRef}
             user={props.user}
         />
-
+        { isShow &&
         <div className='bodyMain'>
             <div className='SideNav'>
                 <div className='NavMenuTitle'>
@@ -1148,6 +1150,7 @@ export default function Home(props){
                 </div>
             </div>
         </div>
+        }
 
 
     </div>
