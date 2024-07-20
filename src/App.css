@@ -1,14 +1,16 @@
-html, body {
-    height: 100%;
-    margin: 0px;
+html,
+body {
+  height: 100%;
+  margin: 0px;
 }
 
-.App{
-    overflow:hdestinationden;
+.App {
+  overflow: hdestinationden;
 }
-*{
-    font-family: '';
-    font-style: normal;
-    font-weight: 400;
-    src: local(''), url('https://fonts.cdnfonts.com/s/107528/Rangile.woff') format('woff');
+* {
+  font-family: "";
+  font-style: normal;
+  font-weight: 400;
+  src: local(""),
+    url("https://fonts.cdnfonts.com/s/107528/Rangile.woff") format("woff");
 }

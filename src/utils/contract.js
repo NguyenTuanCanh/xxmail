@@ -1,652 +1,639 @@
 import { ethers } from "ethers";
 import CryptoJS from "crypto-js";
 import toast from "react-hot-toast";
-import ABI from "./AVAXGods.json"
+import ABI from "./AVAXGods.json";
 
-const  addr = "0xc19b370E69B72e4c6bAf96742309A4576531360c"
+const addr = "0xe9B80B501e1b644BCB53b1C4F6d1dCbEACbD1bfB";
 
-export const CHAIN_ID="0x138d4"
+export const CHAIN_ID = "0x780a";
 
-export const CHAIN_NAME="Berachain bArtio"
+export const CHAIN_NAME = "Movement";
 
-export const SYMBOL="BERA"
+export const SYMBOL = "MOVE";
 
-export const NATIVE_CURRENCY={
-    name: CHAIN_NAME,
-    symbol: SYMBOL,
-    decimals: 18,
-}
+export const NATIVE_CURRENCY = {
+  name: CHAIN_NAME,
+  symbol: SYMBOL,
+  decimals: 18,
+};
 
-export const RPC_URLS=['https://bartio.rpc.berachain.com/']
+export const RPC_URLS = ["https://mevm.devnet.m1.movementlabs.xyz/"];
 
 export const NETWORK_INFO = {
-    chainId: CHAIN_ID,
-    chainName: CHAIN_NAME,
-    nativeCurrency: NATIVE_CURRENCY,
-    rpcUrls: RPC_URLS,
-    blockExplorerUrls: ['https://bartio.beratrail.io/'],
-}
-
-export const CONTRACT_ADDRESS = "0x288E8EdEdFA00e42e5Fd5D9CBF415D01b97104Cb"
+  chainId: CHAIN_ID,
+  chainName: CHAIN_NAME,
+  nativeCurrency: NATIVE_CURRENCY,
+  rpcUrls: RPC_URLS,
+  blockExplorerUrls: ["https://explorer.mevm.devnet.m1.movementlabs.xyz"],
+};
 
 const KEY = "xxxigm";
 
 const getTime = () => {
-    const currentTime = BigInt(Math.floor(Date.now() / 1000));
+  const currentTime = BigInt(Math.floor(Date.now() / 1000));
 
-    return currentTime
-}
+  return currentTime;
+};
 
 const parseTime = (currentTime) => {
-    const date = new Date(currentTime * 1000);
-    
-    const specificTime = new Date(date);
-    const hours = specificTime.getHours().toString().padStart(2, '0');
-    const minutes = specificTime.getMinutes().toString().padStart(2, '0');
-    const seconds = specificTime.getSeconds().toString().padStart(2, '0');
-    
-    const formattedTime = `${hours}:${minutes}:${seconds}`;
+  const date = new Date(currentTime * 1000);
 
-    return formattedTime
-}
+  const specificTime = new Date(date);
+  const hours = specificTime.getHours().toString().padStart(2, "0");
+  const minutes = specificTime.getMinutes().toString().padStart(2, "0");
+  const seconds = specificTime.getSeconds().toString().padStart(2, "0");
+
+  const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+  return formattedTime;
+};
 
 const parseTimes = (currentTime) => {
-    const date = new Date(currentTime * 1000);
-    
-    const specificTime = new Date(date);
+  const date = new Date(currentTime * 1000);
 
-    return specificTime
-}
+  const specificTime = new Date(date);
+
+  return specificTime;
+};
 
 export function isEthereum() {
-    if (window.ethereum) {
-      return true;
-    }
-    return false;
+  if (window.ethereum) {
+    return true;
+  }
+  return false;
 }
 
 export function getChainID() {
-    if (isEthereum()) {
-        return window.ethereum.request({ method: 'eth_chainId' });
-    }
-    return 0;
+  if (isEthereum()) {
+    return window.ethereum.request({ method: "eth_chainId" });
+  }
+  return 0;
 }
 
-export async function isXxxigmNetWork () {
-    if (isEthereum() && window.ethereum.isMetaMask) {
-        try {
-          const chainId = await getChainID();
+export async function isXxxigmNetWork() {
+  if (isEthereum() && window.ethereum.isMetaMask) {
+    try {
+      const chainId = await getChainID();
 
-          return chainId === CHAIN_ID;
-  
-        } catch (error) {
-            return false
-        }
+      return chainId === CHAIN_ID;
+    } catch (error) {
+      return false;
     }
+  }
 }
 
 export function addNetWork() {
-    return window.ethereum.request({
-        method: "wallet_addEthereumChain ",
-        params: [{ chainId: CHAIN_ID }]
-    });
-} 
+  return window.ethereum.request({
+    method: "wallet_addEthereumChain ",
+    params: [{ chainId: CHAIN_ID }],
+  });
+}
 
 export async function checkNetWork() {
-    if (isEthereum() && window.ethereum.isMetaMask) {
-        try {
-          const chainId = await getChainID();
-  
-          if(chainId !== CHAIN_ID) {
-            await addNetWork();
+  if (isEthereum() && window.ethereum.isMetaMask) {
+    try {
+      const chainId = await getChainID();
 
-            return true
+      if (chainId !== CHAIN_ID) {
+        await addNetWork();
 
-          } else {
-            return switchNetwork()
-          }
-  
-        } catch (error) {
-            return switchNetwork()
-        }
+        return true;
       } else {
-        console.error("MetaMask extension not detected");
+        return switchNetwork();
+      }
+    } catch (error) {
+      return switchNetwork();
     }
+  } else {
+    console.error("MetaMask extension not detected");
+  }
 }
 
 export async function switchNetwork() {
-    const networkInfo = NETWORK_INFO;
+  const networkInfo = NETWORK_INFO;
 
-    try {
-      await ethereum.request({ method: 'wallet_addEthereumChain', params: [networkInfo] });
-      await ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN_ID }] });
+  try {
+    await ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [networkInfo],
+    });
+    await ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: CHAIN_ID }],
+    });
 
-      return true;
+    return true;
+  } catch (error) {
+    console.error("Error adding network to MetaMask:", error);
 
-    } catch (error) {
-      console.error('Error adding network to MetaMask:', error);
-
-      return false;
-    }
+    return false;
+  }
 }
 
-export const fetchInboxSender = async()=>{
+export const fetchInboxSender = async () => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
 
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
+      const contract = new ethers.Contract(addr, ABI.abi, signer);
+      const inbox = await contract.inbox();
 
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
+      let cleaned = [];
+      for (let data of inbox) {
+        const mailUser = {
+          from: data._from,
+          sender: data._sender,
+          to: data._to,
+          subject: CryptoJS.AES.decrypt(data._subject, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          markdown: CryptoJS.AES.decrypt(data._markdown, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          timeStamp: parseTime(data._timeStamp._hex),
+          time: parseTimes(data._timeStamp._hex),
 
-            const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const inbox      = await contract.inbox();
+          index: parseInt(data._index),
+          starred: data._starred,
+          read: data._read,
+          idx: parseInt(data._idx),
+        };
 
-            let cleaned =[]
-            for(let data of inbox){
-                const mailUser={
-                    from:data._from,
-                    sender:data._sender,
-                    to:data._to,
-                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
-                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
-                    timeStamp:parseTime(data._timeStamp._hex),
-                    time: parseTimes(data._timeStamp._hex),
+        cleaned.push(mailUser);
+      }
+      cleaned.sort((a, b) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      });
+      cleaned.reverse();
+      return cleaned;
+    }
+  } catch (err) {}
+};
 
-                    index    : parseInt(data._index),
-                    starred  : data._starred,
-                    read     : data._read,
-                    idx      : parseInt(data._idx),
+export const fetchTrashSender = async () => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
 
-                }
+      const contract = new ethers.Contract(addr, ABI.abi, signer);
+      const res = await contract.trash();
+      let cleaned = [];
 
-                cleaned.push(mailUser)
-            }
-            cleaned.sort((a, b) => {
-                return new Date(a.time).getTime() - new Date(b.time).getTime();
-            });
-            cleaned.reverse()
-            return cleaned
-            
+      for (let data of res) {
+        const mailUser = {
+          from: data._from,
+          sender: data._sender,
+          to: data._to,
+          subject: CryptoJS.AES.decrypt(data._subject, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          markdown: CryptoJS.AES.decrypt(data._markdown, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          timeStamp: parseTime(data._timeStamp._hex),
+
+          index: parseInt(data._index),
+          starred: data._starred,
+          read: data._read,
+          spam: data._spam,
+          trash: data._trash,
+          idx: parseInt(data._idx),
+        };
+        if (mailUser.trash) {
+          cleaned.push(mailUser);
         }
-    }catch(err){
-        // console.log(err);  
+      }
+      cleaned.sort((a, b) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      });
+      cleaned.reverse();
+      return cleaned;
     }
-}
+  } catch (err) {}
+};
 
-export const fetchTrashSender= async()=>{
+export const fetchSentSender = async () => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
 
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
+      const contract = new ethers.Contract(addr, ABI.abi, signer);
+      const res = await contract.sent();
+      let cleaned = [];
+      for (let data of res) {
+        const mailUser = {
+          from: data._from,
+          sender: data._sender,
+          to: data._to,
+          subject: CryptoJS.AES.decrypt(data._subject, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          markdown: CryptoJS.AES.decrypt(data._markdown, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          timeStamp: parseTime(data._timeStamp._hex),
 
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
+          index: parseInt(data._index),
+          starred: data._starred,
+          read: data._read,
+          spam: data._spam,
+          idx: parseInt(data._idx),
+        };
+        cleaned.push(mailUser);
+      }
+      cleaned.sort((a, b) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      });
+      cleaned.reverse();
+      return cleaned;
+    }
+  } catch (err) {
+    // console.log(err);
+  }
+};
 
-            const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const res        = await contract.trash();
-            let cleaned =[]
+export const fetchUnreadSender = async () => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
 
-            for(let data of res){
-                const mailUser={
-                    from:data._from,
-                    sender:data._sender,
-                    to:data._to,
-                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
-                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
-                    timeStamp:parseTime(data._timeStamp._hex),
+      const contract = new ethers.Contract(addr, ABI.abi, signer);
+      const res = await contract.inbox();
+      let cleaned = [];
+      for (let data of res) {
+        const mailUser = {
+          from: data._from,
+          sender: data._sender,
+          to: data._to,
+          subject: CryptoJS.AES.decrypt(data._subject, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          markdown: CryptoJS.AES.decrypt(data._markdown, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          timeStamp: parseTime(data._timeStamp._hex),
 
-                    index    : parseInt(data._index),
-                    starred  : data._starred,
-                    read     : data._read,
-                    spam     : data._spam,
-                    trash    : data._trash,
-                    idx      : parseInt(data._idx),
-                }
-                if(mailUser.trash ){
-                    cleaned.push(mailUser)
-                }
-            }
-            cleaned.sort((a, b) => {
-                return new Date(a.time).getTime() - new Date(b.time).getTime();
-            });
-            cleaned.reverse()
-            return cleaned
-            
+          index: parseInt(data._index),
+          starred: data._starred,
+          read: data._read,
+          spam: data._spam,
+          inbox: data._inbox,
+          tracked: data._tracked,
+          trash: data._trash,
+          sent: data._sent,
+          idx: parseInt(data._idx),
+        };
+
+        if (mailUser.read == false) {
+          cleaned.push(mailUser);
         }
-    }catch(err){
-        // console.log(err);  
+      }
+      cleaned.sort((a, b) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      });
+      cleaned.reverse();
+      return cleaned;
     }
-}
+  } catch (err) {
+    // console.log(err);
+  }
+};
 
-export const fetchSentSender= async()=>{
+export const fetchReadSender = async () => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
 
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
+      const contract = new ethers.Contract(addr, ABI.abi, signer);
+      const res = await contract.inbox();
+      let cleaned = [];
 
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
+      for (let data of res) {
+        const mailUser = {
+          from: data._from,
+          sender: data._sender,
+          to: data._to,
+          subject: CryptoJS.AES.decrypt(data._subject, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          markdown: CryptoJS.AES.decrypt(data._markdown, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          timeStamp: parseTime(data._timeStamp._hex),
 
-            const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const res        = await contract.sent();
-            let cleaned =[]
-            for(let data of res){
-                const mailUser={
-                    from:data._from,
-                    sender:data._sender,
-                    to:data._to,
-                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
-                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
-                    timeStamp:parseTime(data._timeStamp._hex),
-                    
-                    index    : parseInt(data._index),
-                    starred  : data._starred,
-                    read     : data._read,
-                    spam     : data._spam,
-                    idx      : parseInt(data._idx),
-                    
-
-                }
-                cleaned.push(mailUser)
-            }
-            cleaned.sort((a, b) => {
-                return new Date(a.time).getTime() - new Date(b.time).getTime();
-            });
-            cleaned.reverse()
-            return cleaned
-            
+          index: parseInt(data._index),
+          starred: data._starred,
+          spam: data._spam,
+          read: data._read,
+          tracker: data._tracked,
+          idx: parseInt(data._idx),
+        };
+        if (mailUser.read == true && !mailUser.tracker) {
+          cleaned.push(mailUser);
         }
-    }catch(err){
-        // console.log(err);  
+      }
+      cleaned.sort((a, b) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      });
+      cleaned.reverse();
+      return cleaned;
     }
-}
+  } catch (err) {
+    // console.log(err);
+  }
+};
 
-export const fetchUnreadSender= async()=>{
-    
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
+export const fetchSpamSender = async () => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
 
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
+      const contract = new ethers.Contract(addr, ABI.abi, signer);
+      const res = await contract.spam();
+      let cleaned = [];
+      for (let data of res) {
+        const mailUser = {
+          from: data._from,
+          sender: data._sender,
+          to: data._to,
+          subject: CryptoJS.AES.decrypt(data._subject, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          markdown: CryptoJS.AES.decrypt(data._markdown, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          timeStamp: parseTime(data._timeStamp._hex),
 
-            const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const res        = await contract.inbox();
-            let cleaned =[]
-            for(let data of res){
-                const mailUser={
-                    from:data._from,
-                    sender:data._sender,
-                    to:data._to,
-                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
-                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
-                    timeStamp:parseTime(data._timeStamp._hex),
-                    
-                    index    : parseInt(data._index),
-                    starred  : data._starred,
-                    read     : data._read,
-                    spam     : data._spam,
-                    inbox    : data._inbox,
-                    tracked  : data._tracked,
-                    trash    : data._trash,
-                    sent     : data._sent,
-                    idx      : parseInt(data._idx),
-                }
+          index: parseInt(data._index),
+          starred: data._starred,
+          read: data._read,
+          spam: data._spam,
+          idx: parseInt(data._idx),
+        };
+        cleaned.push(mailUser);
+      }
+      cleaned.sort((a, b) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      });
+      cleaned.reverse();
+      return cleaned;
+    }
+  } catch (err) {
+    // console.log(err);
+  }
+};
 
-                if( mailUser.read == false ){  
-                    cleaned.push(mailUser)
-                }
-            }
-            cleaned.sort((a, b) => {
-                return new Date(a.time).getTime() - new Date(b.time).getTime();
-            });
-            cleaned.reverse()
-            return cleaned
-            
+export const fetchArchiveSender = async () => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      const contract = new ethers.Contract(addr, ABI.abi, signer);
+      const res = await contract.archive();
+      let cleaned = [];
+      for (let data of res) {
+        const mailUser = {
+          from: data._from,
+          sender: data._sender,
+          to: data._to,
+          subject: CryptoJS.AES.decrypt(data._subject, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          markdown: CryptoJS.AES.decrypt(data._markdown, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          timeStamp: parseTime(data._timeStamp._hex),
+
+          index: parseInt(data._index),
+          starred: data._starred,
+          read: data._read,
+          spam: data._spam.ABI,
+          idx: parseInt(data._idx),
+        };
+        cleaned.push(mailUser);
+      }
+      cleaned.sort((a, b) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      });
+      cleaned.reverse();
+      return cleaned;
+    }
+  } catch (err) {
+    // console.log(err);
+  }
+};
+
+export const fetchStarredSender = async () => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      const contract = new ethers.Contract(addr, ABI.abi, signer);
+      const res = await contract.star();
+      let cleaned = [];
+      for (let data of res) {
+        const mailUser = {
+          from: data._from,
+          sender: data._sender,
+          to: data._to,
+          subject: CryptoJS.AES.decrypt(data._subject, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          markdown: CryptoJS.AES.decrypt(data._markdown, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          timeStamp: parseTime(data._timeStamp._hex),
+
+          index: parseInt(data._index),
+          starred: data._starred,
+          read: data._read,
+          spam: data._spam,
+          inbox: data._inbox,
+          tracked: data._tracked,
+          trash: data._trash,
+          sent: data._sent,
+          idx: parseInt(data._idx),
+        };
+        if (!mailUser.trash) {
+          cleaned.push(mailUser);
         }
-    }catch(err){
-        // console.log(err);  
+      }
+      cleaned.sort((a, b) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      });
+      cleaned.reverse();
+      return cleaned;
     }
-}
+  } catch (err) {}
+};
 
-export const fetchReadSender= async()=>{
+export const fetchReplySender = async (address, index) => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
 
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
-
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
-
-            const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const res        = await contract.inbox();
-            let cleaned      = []
-            
-            for(let data of res){
-                const mailUser={
-                    from:data._from,
-                    sender:data._sender,
-                    to:data._to,
-                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
-                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
-                    timeStamp:parseTime(data._timeStamp._hex),
-                    
-                    index    : parseInt(data._index),
-                    starred  : data._starred,
-                    spam     : data._spam,
-                    read     : data._read,
-                    tracker  : data._tracked,
-                    idx      : parseInt(data._idx),
-                }
-                if(mailUser.read == true && !mailUser.tracker){
-                    cleaned.push(mailUser)
-                }
-            }
-            cleaned.sort((a, b) => {
-                return new Date(a.time).getTime() - new Date(b.time).getTime();
-            });
-            cleaned.reverse()
-            return cleaned
-            
+      const contract = new ethers.Contract(addr, ABI.abi, signer);
+      const res = await contract.getReply(address, index);
+      let cleaned = [];
+      for (let data of res) {
+        const mailUser = {
+          from: data._from,
+          sender: data._sender,
+          to: data._to,
+          subject: CryptoJS.AES.decrypt(data._subject, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          markdown: CryptoJS.AES.decrypt(data._markdown, KEY).toString(
+            CryptoJS.enc.Utf8
+          ),
+          timeStamp: parseTime(data._timeStamp._hex),
+          index: data._index,
+          starred: data._starred,
+          read: data._read,
+          spam: data._spam,
+          inbox: data._inbox,
+          tracked: data._unTracked,
+          trash: data._trash,
+          sent: data._sent,
+          idx: data._idx,
+        };
+        if (!mailUser.trash) {
+          cleaned.push(mailUser);
         }
-    }catch(err){
-        // console.log(err);  
+      }
+      cleaned.sort((a, b) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      });
+      return cleaned;
     }
-}
+  } catch (err) {}
+};
 
-export const fetchSpamSender= async()=>{
+export const ComposeMail = async (to, subject, body) => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
 
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
+      if ((await signer.getAddress()).toLowerCase() === to.toLowerCase()) {
+        return toast.error("Cannot send to yourself!");
+      }
 
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
-
-            const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const res        = await contract.spam();
-            let cleaned =[]
-            for(let data of res){
-                const mailUser={
-                    from:data._from,
-                    sender:data._sender,
-                    to:data._to,
-                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
-                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
-                    timeStamp:parseTime(data._timeStamp._hex),
-
-                    index    : parseInt(data._index),
-                    starred  : data._starred,
-                    read     : data._read,
-                    spam     : data._spam,
-                    idx      : parseInt(data._idx),
-
-
-                }
-                cleaned.push(mailUser)
-                
-            }
-            cleaned.sort((a, b) => {
-                return new Date(a.time).getTime() - new Date(b.time).getTime();
-            });
-            cleaned.reverse()
-            return cleaned
-            
-        }
-    }catch(err){
-        // console.log(err);  
+      const contract = new ethers.Contract(addr, ABI.abi, signer);
+      const mail = await contract.compose(
+        to,
+        CryptoJS.AES.encrypt(subject, KEY).toString(),
+        CryptoJS.AES.encrypt(body, KEY).toString(),
+        getTime()
+      );
+      await mail.wait();
+      toast.success("Message sent");
     }
-}
+  } catch (err) {
+    // console.log(err);
+  }
+};
+export const replyMail = async (index, to, subject, body, from, idx) => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
 
-export const fetchArchiveSender= async()=>{
-
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
-
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
-
-            const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const res        = await contract.archive();
-            let cleaned =[]
-            for(let data of res){
-                const mailUser={
-                    from:data._from,
-                    sender:data._sender,
-                    to:data._to,
-                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
-                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
-                    timeStamp:parseTime(data._timeStamp._hex),
-                    
-                    index    : parseInt(data._index),
-                    starred  : data._starred,
-                    read     : data._read,
-                    spam     : data._spam.ABI,
-                    idx      : parseInt(data._idx),
-                }
-                cleaned.push(mailUser)
-                
-            }
-            cleaned.sort((a, b) => {
-                return new Date(a.time).getTime() - new Date(b.time).getTime();
-            });
-            cleaned.reverse()
-            return cleaned
-            
-        }
-    }catch(err){
-        // console.log(err);  
+      const contract = new ethers.Contract(addr, ABI.abi, signer);
+      const mail = await contract.reply(
+        index,
+        to,
+        CryptoJS.AES.encrypt(subject, KEY).toString(),
+        CryptoJS.AES.encrypt(body, KEY).toString(),
+        from,
+        getTime(),
+        idx
+      );
+      await mail.wait();
+      toast.success("Reply sent");
     }
-}
+  } catch (err) {
+    // console.log(err);
+  }
+};
+export const forwardMail = async (to, subject, body, index) => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
 
-export const fetchStarredSender= async()=>{
+      if ((await signer.getAddress()).toLowerCase() === to.toLowerCase()) {
+        return toast.error("Cannot forward to yourself!");
+      }
 
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
-
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
-
-            const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const res        = await contract.star();
-            let cleaned =[]
-            for(let data of res){
-                const mailUser={
-                    from:data._from,
-                    sender:data._sender,
-                    to:data._to,
-                    subject:CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
-                    markdown:CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
-                    timeStamp:parseTime(data._timeStamp._hex),
-
-                    index    : parseInt(data._index),
-                    starred  : data._starred,
-                    read     : data._read,
-                    spam     : data._spam,
-                    inbox    : data._inbox,
-                    tracked  : data._tracked,
-                    trash    : data._trash,
-                    sent     : data._sent,
-                    idx      : parseInt(data._idx),
-                }
-                if(!mailUser.trash){
-                    cleaned.push(mailUser)
-                }
-                
-            }
-            cleaned.sort((a, b) => {
-                return new Date(a.time).getTime() - new Date(b.time).getTime();
-            });
-            cleaned.reverse()
-            return cleaned
-            
-        }
-    }catch(err){
-        // console.log(err);  
+      const contract = new ethers.Contract(addr, ABI.abi, signer);
+      const mail = await contract.forward(
+        to,
+        CryptoJS.AES.encrypt(subject, KEY).toString(),
+        CryptoJS.AES.encrypt(body, KEY).toString(),
+        index,
+        getTime(),
+        index
+      );
+      await mail.wait();
+      toast.success("Forward sent");
     }
-}
+  } catch (err) {}
+};
 
-export const fetchReplySender= async(address, index)=>{
+export const BulkAction = async (to, indexes, refLoader, setSelectionId) => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
 
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
-
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
-
-            const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const res        = await contract.getReply(address, index);
-            let cleaned =[]
-            for(let data of res){
-                const mailUser={
-
-                    from     :data._from,
-                    sender   :data._sender,
-                    to       :data._to,
-                    subject  :CryptoJS.AES.decrypt(data._subject, KEY).toString(CryptoJS.enc.Utf8),
-                    markdown :CryptoJS.AES.decrypt(data._markdown, KEY).toString(CryptoJS.enc.Utf8),
-                    timeStamp:parseTime(data._timeStamp._hex),
-                    index    : data._index,
-                    starred  : data._starred,
-                    read     : data._read,
-                    spam     : data._spam,
-                    inbox    : data._inbox,
-                    tracked  : data._unTracked,
-                    trash    : data._trash,
-                    sent     : data._sent,
-                    idx      : data._idx,
-                }
-                if(!mailUser.trash){
-                    cleaned.push(mailUser)
-                }
-                
-            }
-            cleaned.sort((a, b) => {
-                return new Date(a.time).getTime() - new Date(b.time).getTime();
-            });
-            return cleaned
-            
-        }
-    }catch(err){
-        // console.log(err); 
+      const contract = new ethers.Contract(addr, ABI.abi, signer);
+      refLoader.current.continuousStart();
+      const toastId = toast.loading("Confirming transaction");
+      const move = await contract.move(to, indexes, { gasLimit: 300000 });
+      await move.wait();
+      toast.dismiss(toastId);
+      refLoader.current.complete();
+      setSelectionId([]);
     }
-}
+  } catch (err) {
+    toast.dismiss();
+    setSelectionId([]);
+    refLoader.current.complete();
+  }
+};
 
-export const ComposeMail = async(to,subject,body)=>{
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
+export const getAddress = async () => {
+  try {
+    const { ethereum } = window;
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+      const from = await signer.getAddress();
 
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
-
-            if((await signer.getAddress()).toLowerCase() === to.toLowerCase()) {
-                return  toast.error("Cannot send to yourself!");
-            }
-
-            const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const mail       = await contract.compose(
-                to,
-                CryptoJS.AES.encrypt(subject, KEY).toString(),
-                CryptoJS.AES.encrypt(body, KEY).toString(),
-                getTime()
-            );
-            await mail.wait()
-            toast.success("Message sent");
-
-        }
-    }catch(err){
-        // console.log(err);  
+      return from;
     }
-}
-export const replyMail = async(index,to,subject,body,from, idx)=>{
-
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
-
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
-
-            const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const mail       = await contract.reply(index,to,CryptoJS.AES.encrypt(subject, KEY).toString(),CryptoJS.AES.encrypt(body, KEY).toString(),from, getTime(), idx);
-            await mail.wait()
-            toast.success("Reply sent");
-
-        }
-    }catch(err){
-        // console.log(err);  
-    }
-}
-export const forwardMail = async(to,subject,body,index)=>{
-
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
-
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
-
-            if((await signer.getAddress()).toLowerCase() === to.toLowerCase()) {
-                return  toast.error("Cannot forward to yourself!");
-            }
-
-            const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            const mail       = await contract.forward(to, CryptoJS.AES.encrypt(subject, KEY).toString() ,CryptoJS.AES.encrypt(body, KEY).toString(), index , getTime(), index);
-            await mail.wait()
-            toast.success("Forward sent");
-
-        }
-    }catch(err){
-        // console.log(err);  
-    }
-}
-
-export const BulkAction = async(to,indexes,refLoader,setSelectionId)=>{
-
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
-
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
-
-            const contract   = new ethers.Contract(addr,ABI.abi,signer);
-            refLoader.current.continuousStart()
-            const toastId=toast.loading("Confirming transaction");
-            const move = await contract.move(to,indexes,{gasLimit:300000})
-            await move.wait()
-            toast.dismiss(toastId)
-            refLoader.current.complete()
-            setSelectionId([])
-
-        }
-    }catch(err){
-        toast.dismiss()
-        setSelectionId([])
-        refLoader.current.complete()
-        // console.log(err);  
-    }
-}
-
-export const getAddress = async()=>{
-
-    try{        
-        const {ethereum}     = window;
-        if(ethereum){
-
-            const provider   = new ethers.providers.Web3Provider(ethereum);
-            const signer     = provider.getSigner();
-            const from = await signer.getAddress()
-
-            return from
-
-        }
-    }catch(err){
-        // console.log(err);  
-    }
-}
+  } catch (err) {}
+};

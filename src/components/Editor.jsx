@@ -1,206 +1,256 @@
-import './Editor.css'
-import { motion } from 'framer-motion'
-import { ComposeMail, forwardMail, replyMail, getAddress } from '../utils/contract'
-import { useEffect, useState } from 'react'
-import { useRef } from 'react'
-import toast, { Toaster } from 'react-hot-toast';
-import Blockies from 'react-blockies';
-import { ethers } from 'ethers'
-import EmojiPicker from 'emoji-picker-react';
-import ReactMarkdown from 'react-markdown'
+import "./Editor.css";
+import { motion } from "framer-motion";
+import {
+  ComposeMail,
+  forwardMail,
+  replyMail,
+  getAddress,
+} from "../utils/contract";
+import { useEffect, useState } from "react";
+import { useRef } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import Blockies from "react-blockies";
+import { ethers } from "ethers";
+import EmojiPicker from "emoji-picker-react";
+import ReactMarkdown from "react-markdown";
 
-export default function Editor(props){
-    let variants = {
-        open  :{ y: 0  ,opacity:1 },
-        closed:{ y:600  ,opacity:1 }
+export default function Editor(props) {
+  let variants = {
+    open: { y: 0, opacity: 1 },
+    closed: { y: 600, opacity: 1 },
+  };
+  const [to, setTo] = useState("");
+  const [subject, setSubject] = useState("");
+  const [body, setBody] = useState("");
+  const [addrValid, setAddrValid] = useState(false);
+  const [see, setSee] = useState(false);
+  const [display, setDisplay] = useState(false);
+
+  setTimeout(() => {
+    setDisplay(true);
+  }, 3000);
+
+  useEffect(() => {
+    const action = async () => {
+      if (props.reply) {
+        props.setIsOpen(true);
+        if (props.selected != null) {
+          const from = await getAddress();
+          setTo(
+            from === props.selected?.to
+              ? props.selected?.from
+              : props.selected?.to
+          );
+          setSubject(
+            `Reply from ${from.substring(0, 4) + "...." + from.slice(-4)}`
+          );
+        }
+      }
+    };
+
+    action();
+  }, [props.reply]);
+
+  useEffect(() => {
+    if (props.forward) {
+      props.setIsOpen(true);
+      if (props.selected != null) {
+        setTo();
+        setSubject(`Forwarded message  [${props.selected.subject}]`);
+        setBody(props.selected.markdown);
+      }
     }
-    const [to,setTo] = useState('')
-    const [subject,setSubject] = useState('')
-    const [body,setBody]       = useState('')
-    const [addrValid,setAddrValid] = useState(false)
-    const [see,setSee] = useState(false)
-    const [display,setDisplay] = useState(false)
+  }, [props.forward]);
 
-    setTimeout(() => {
-        setDisplay(true)
-    }, 1000);
+  useEffect(() => {
+    if (ethers.utils.isAddress(to)) {
+      setAddrValid(true);
+    } else {
+      setAddrValid(false);
+    }
+  }, [to]);
 
-    useEffect(()=>{
-        const action = async() => {if(props.reply){
-            props.setIsOpen(true)
-            if(props.selected != null){
-                const from = await getAddress()
-                setTo(from === props.selected?.to ? props.selected?.from : props.selected?.to)
-                setSubject(`Reply from ${
-                    from.substring(0,4)+"...."+from.slice(-4)
-                }`)
-            }
-        }}
-
-        action()
-    },[props.reply])
-
-    useEffect(()=>{
-        if(props.forward){
-            props.setIsOpen(true)
-            if(props.selected != null){
-                setTo()
-                setSubject(`Forwarded message  [${props.selected.subject}]`)
-                setBody(props.selected.markdown)
-            }
+  return (
+    <motion.div
+      className={`Editor ${display ? "" : "hiden"}`}
+      initial={{ y: 100, opacity: 0 }}
+      animate={props.isOpen == true ? variants.open : variants.closed}
+      transition={
+        !props.isOpen && {
+          type: "spring",
+          bounce: 0.1,
+          duration: 0.1,
+          stiffness: 100,
+          velocity: 2,
         }
-    },[props.forward])
+      }
+    >
+      <div className="header-edit">
+        <p className="mediumRegular">New Message</p>
+        {props.isOpen && (
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            onClick={() => {
+              if (props.reply == false) {
+                props.setIsOpen(false);
+              } else {
+                props.setReply(false);
+                props.setIsOpen(false);
+              }
+              if (props.forward) {
+                props.setForward(false);
+              }
+              setTo("");
+              setSubject("");
+              setBody("");
+            }}
+            className="material-symbols-outlined closeBtn"
+          >
+            close
+          </motion.span>
+        )}
+      </div>
 
-    useEffect(()=>{
-        if(ethers.utils.isAddress(to)){
-            setAddrValid(true)
-        }else{
-            setAddrValid(false)
-        }
-    },[to])
- 
-    return <motion.div 
-    
-        className={`Editor ${display ? '' : 'hiden'}`}
-        initial    =  {{ y:100,opacity:0}}
-        animate    =  {props.isOpen == true ? variants.open:variants.closed}
-        transition =  {!props.isOpen &&{ type: 'spring',bounce:0.1,duration: 0.1,stiffness: 100,velocity: 2}}
-        >
-        <div className='header-edit'>
-            <p className='mediumRegular'>New Message</p>
-            {
-                props.isOpen && <motion.span 
-                    initial    =  {{ opacity:0}}
-                    animate    =  {{ opacity:1}}
-                    onClick={()=>{
-                        if(props.reply == false){
-                            props.setIsOpen(false)
-                        }else{
-                            props.setReply(false)
-                            props.setIsOpen(false)
-                        }
-                        if(props.forward){
-                            props.setForward(false)
-                        }
-                        setTo('')
-                        setSubject('')
-                        setBody('')
+      <div className="destination">
+        <div className="inputEditor mediumSans">
+          <p className="mediumRegular">To</p>
+          {/* <input readOnly={props.reply ? true : false} value={to === props.selected?.to ? props.selected?.from : props.selected?.to || ""} onChange={(e)=>{ */}
+          <input
+            readOnly={props.reply ? true : false}
+            value={to || ""}
+            onChange={(e) => {
+              setTo(e.target.value);
+              if (ethers.utils.isAddress(e.target.value)) {
+                setAddrValid(true);
+              } else {
+                setAddrValid(false);
+              }
+            }}
+            className={` ${addrValid && "valid-addr"} input1  mediumSans`}
+            type="text"
+            placeholder="0x0000000000000000000000"
+          />
 
-                    }} className="material-symbols-outlined closeBtn"
-                >close</motion.span>
-            }
-            
+          {addrValid && (
+            <motion.div
+              initial={{ x: 20, opacity: 1 }}
+              animate={{ x: 0, opacity: 1 }}
+            >
+              <Blockies
+                seed={to}
+                size={10}
+                scale={3}
+                color="rgba(255,255,255,.3)"
+                bgColor="#0b57d0"
+                spotColor="rgba(255,255,255,.3)"
+              />
+            </motion.div>
+          )}
         </div>
 
-        <div className='destination'>
-            
-            <div className='inputEditor mediumSans'>
-                <p className='mediumRegular'>To</p>
-                {/* <input readOnly={props.reply ? true : false} value={to === props.selected?.to ? props.selected?.from : props.selected?.to || ""} onChange={(e)=>{ */}
-                <input readOnly={props.reply ? true : false} value={to || ""} onChange={(e)=>{
-                    setTo(e.target.value);
-                    if(ethers.utils.isAddress(e.target.value)){
-                        setAddrValid(true)
-                    }else{
-                        setAddrValid(false)
-                    }
-                }} className={` ${addrValid&& "valid-addr"} input1  mediumSans`} type="text" placeholder="0x0000000000000000000000"/>
-
-                {
-                    addrValid && <
-                        motion.div
-                        initial    =  {{ x:20,opacity:1}}
-                        animate    =  {{ x: 0  ,opacity:1 }}
-                    >
-                        <Blockies
-                            seed={to}
-                            size={10} 
-                            scale={3} 
-                            color="rgba(255,255,255,.3)" 
-                            bgColor="#0b57d0" 
-                            spotColor="rgba(255,255,255,.3)"
-                        />
-                </motion.div>
+        <div className="inputEditor ">
+          <input
+            readOnly={props.reply || props.forward ? true : false}
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            className="input2"
+            type="text"
+            placeholder="Subject"
+          />
+        </div>
+      </div>
+      <div className="markdownEditor">
+        {see == false ? (
+          <textarea
+            readOnly={props.forward ? true : false}
+            className="mediumRegular"
+            value={body}
+            onChange={(e) => {
+              setBody(e.target.value);
+            }}
+          />
+        ) : (
+          <div className="view">
+            <ReactMarkdown>{body}</ReactMarkdown>
+          </div>
+        )}
+        <div className="toolBoxEditor">
+          <div className="toolBoxS">
+            <motion.button
+              onClick={async () => {
+                if (props.reply == false && props.forward == false) {
+                  const isAddress = ethers.utils.isAddress(to);
+                  if (
+                    subject.trim().length >= 1 &&
+                    body.trim().length >= 1 &&
+                    isAddress
+                  ) {
+                    props.LoaderRef.current.continuousStart();
+                    setSubject("");
+                    setBody("");
+                    const toastId = toast.loading("Sending...");
+                    const action = await ComposeMail(to, subject, body);
+                    props.LoaderRef.current.complete();
+                    props.setIsOpen(false);
+                    await props.refreshInbox();
+                    toast.dismiss(toastId);
+                  } else if (subject.trim().length == 0) {
+                    toast("The subject cannot be empty !");
+                  } else if (body.trim().length == 0) {
+                    toast("The body cannot be empty !");
+                  } else if (isAddress == false) {
+                    toast("Address invalid !");
+                  }
+                } else if (props.reply == true && props.forward == false) {
+                  props.LoaderRef.current.continuousStart();
+                  await replyMail(
+                    props.selected.index,
+                    props.selected?.to,
+                    subject,
+                    body,
+                    props.selected?.from,
+                    props.selected.idx
+                  );
+                  props.LoaderRef.current.complete();
+                  setTo("");
+                  setSubject("");
+                  setBody("");
+                  props.setReply(false);
+                  props.setIsOpen(false);
+                  props.refreshReply();
+                } else if (props.reply == false && props.forward == true) {
+                  if (to != undefined) {
+                    await forwardMail(
+                      to,
+                      props.selected.subject,
+                      props.selected.markdown,
+                      props.selected.index
+                    );
+                    props.setForward(false);
+                  }
                 }
-                
-            </div>
+              }}
+              className="mediumRegular"
+            >
+              <span>Send</span>
+              <span className="material-symbols-outlined">send</span>
+            </motion.button>
 
-            <div className='inputEditor '>
-                <input readOnly={props.reply||props.forward?true:false} value={subject} onChange={(e)=>setSubject(e.target.value)} className='input2' type="text" placeholder="Subject"/>
-            </div>
+            <span
+              onClick={() => setSee(!see)}
+              style={{ color: see && "#0b57d0" }}
+              className="material-symbols-outlined tool-icn"
+            >
+              visibility
+            </span>
+            <span className="material-symbols-outlined tool-icn">
+              home_storage
+            </span>
+          </div>
+          <span className="material-symbols-outlined tool-icn">delete</span>
         </div>
-        <div className='markdownEditor'>
-            { see == false?
-            <textarea readOnly={props.forward?true:false} className='mediumRegular' value={body} onChange={(e)=>{setBody(e.target.value)}}/>:
-            <div className='view'><ReactMarkdown >{body}</ReactMarkdown></div>
-            }
-            <div className='toolBoxEditor'>
-                <div className='toolBoxS'>
-                    <motion.button 
-                        onClick={async()=>{
-
-                            if(props.reply == false && props.forward == false){
-
-                                const isAddress = ethers.utils.isAddress(to);
-                                if(subject.trim().length >= 1 && body.trim().length >= 1 && isAddress){
-                                    props.LoaderRef.current.continuousStart()
-                                    setSubject('');
-                                    setBody('');
-                                    const toastId = toast.loading('Sending...');
-                                    const action= await ComposeMail(to,subject,body)
-                                    props.LoaderRef.current.complete()
-                                    props.setIsOpen(false);
-                                    await props.refreshInbox()
-                                    toast.dismiss(toastId);
-
-                                }else if(subject.trim().length == 0){
-                                    toast("The subject cannot be empty !")
-                                }else if(body.trim().length == 0){
-                                    toast("The body cannot be empty !")
-                                }else if(isAddress == false){
-                                    toast("Address invalid !")
-
-                                }
-                            }else if(props.reply == true && props.forward == false){
-                                props.LoaderRef.current.continuousStart()
-                                await replyMail(props.selected.index, props.selected?.to,subject,body, props.selected?.from, props.selected.idx)
-                                props.LoaderRef.current.complete()
-                                setTo('');
-                                setSubject('')
-                                setBody('')
-                                props.setReply(false)
-                                props.setIsOpen(false)
-                                props.refreshReply()
-                            }else if(props.reply == false && props.forward == true){
-                               
-                                if(to != undefined){
-                                   await forwardMail(
-                                        to,
-                                        props.selected.subject,
-                                        props.selected.markdown,
-                                        props.selected.index
-                                    )
-                                    props.setForward(false)
-                                    
-                                }
-                            }
-
-
-                        }}
-                        className='mediumRegular'>
-                        <span>Send</span>
-                        <span className="material-symbols-outlined">send</span>
-                    </motion.button>
-                    
-                    <span onClick={()=>setSee(!see)} style={{color:see && '#0b57d0'}} className="material-symbols-outlined tool-icn">visibility</span>
-                    <span className="material-symbols-outlined tool-icn">home_storage</span>
-
-                </div>
-                <span className="material-symbols-outlined tool-icn">delete</span>
-            </div>
-        </div>
-
-
-
+      </div>
     </motion.div>
+  );
 }

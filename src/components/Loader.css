@@ -1,85 +1,87 @@
-.Loader{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    user-select:none;
-    height:100vh;
-    background-color:#0e1120;
+.Loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  height: 100vh;
+  background-color: #0e1120;
 }
-.logo-txt{
-    font-size:3em;
-    color:#27272796;
-    display:flex;
-    grid-column-gap:4px;
+.logo-txt {
+  font-size: 3em;
+  color: #27272796;
+  display: flex;
+  grid-column-gap: 4px;
 }
 .Loader img {
-    height: 120px;
-    margin-bottom: 20px;
+  height: 120px;
+  margin-bottom: 20px;
 }
-.darken{
-    color:#272727de;
+.darken {
+  color: #272727de;
 }
-.loader-bar{
-    background-color:#2f39492a;
-    width:15%;
-    height: 4px;
-    color:transparent;
-    margin-top:2%;
-    overflow:hidden;
+.loader-bar {
+  background-color: #2f39492a;
+  width: 15%;
+  height: 4px;
+  color: transparent;
+  margin-top: 2%;
+  overflow: hidden;
+}
+.loader-value {
+  background-color: #d9113a;
+  height: 100%;
+}
+.connect {
+  margin-top: 1%;
+  width: 245px;
+  height: 45px;
+  cursor: pointer;
+  border: none;
+  font-size: 17px;
 
+  border-radius: 5px;
+  transition: 0.1s;
+  color: #fff;
+  background-color: #fa543e;
+  opacity: 0.6 !important;
+  transition: opacity 0.3s ease;
 }
-.loader-value{
-    background-color:#D9113A;
-    height: 100%;
+.connect:hover {
+  background-color: white;
+  color: #fa543e;
+  background-color: #fa543e;
+  color: white;
+  opacity: 1 !important;
 }
-.connect{
-    margin-top:1%;
-    width:245px;
-    height:45px;
-    cursor: pointer;
-    border:none;
-    font-size:17px;
+.sub {
+  text-align: center;
+  color: rgba(44, 44, 44, 0.719);
+  margin-top: 1%;
+  font-size: 16px;
+  font-family: "RobotoRegular";
+  color: #fff;
+  margin-bottom: 20px;
 
-    border-radius:5px;
-    transition:.1s;
-    color: #fff;
-    background-color:#FA543E;
-    opacity: 0.6 !important;
-    transition: opacity 0.3s ease;
-}
-.connect:hover{
-    background-color:white;
-    color:#FA543E;
-    background-color:#FA543E;
-    color:white;
-    opacity: 1 !important;
-}
-.sub{
-    text-align:center;
-    color:rgba(44, 44, 44, 0.719);
-    margin-top:1%;
-    font-size:16px;
-    font-family:"RobotoRegular";
-    color: #fff;
-    margin-bottom: 20px;
-
-    font-family: '';
-    font-style: normal;
-    font-weight: 400;
-    src: local(''), url('https://fonts.cdnfonts.com/s/107528/Rangile.woff') format('woff');
+  font-family: "";
+  font-style: normal;
+  font-weight: 400;
+  src: local(""),
+    url("https://fonts.cdnfonts.com/s/107528/Rangile.woff") format("woff");
 }
 
 .mediumRegular {
-    font-family: '';
-    font-style: normal;
-    font-weight: 400;
-    src: local(''), url('https://fonts.cdnfonts.com/s/107528/Rangile.woff') format('woff');
+  font-family: "";
+  font-style: normal;
+  font-weight: 400;
+  src: local(""),
+    url("https://fonts.cdnfonts.com/s/107528/Rangile.woff") format("woff");
 }
 
 .inputEditor input {
-    font-family: '' !important;
-    font-style: normal !important;
-    font-weight: 400 !important;
-    src: local(''), url('https://fonts.cdnfonts.com/s/107528/Rangile.woff') format('woff') !important;
+  font-family: "" !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  src: local(""),
+    url("https://fonts.cdnfonts.com/s/107528/Rangile.woff") format("woff") !important;
 }
