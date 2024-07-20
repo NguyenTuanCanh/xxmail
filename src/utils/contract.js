@@ -5,9 +5,9 @@ import ABI from "./AVAXGods.json"
 
 const  addr = "0xc19b370E69B72e4c6bAf96742309A4576531360c"
 
-export const CHAIN_ID="0x138d5"
+export const CHAIN_ID="0x138d4"
 
-export const CHAIN_NAME="Berachain Artio"
+export const CHAIN_NAME="Berachain bArtio"
 
 export const SYMBOL="BERA"
 
@@ -17,20 +17,19 @@ export const NATIVE_CURRENCY={
     decimals: 18,
 }
 
-export const RPC_URLS=['https://artio.rpc.berachain.com/']
+export const RPC_URLS=['https://bartio.rpc.berachain.com/']
 
 export const NETWORK_INFO = {
     chainId: CHAIN_ID,
     chainName: CHAIN_NAME,
     nativeCurrency: NATIVE_CURRENCY,
     rpcUrls: RPC_URLS,
-    blockExplorerUrls: ['https://artio.beratrail.io/'],
+    blockExplorerUrls: ['https://bartio.beratrail.io/'],
 }
 
-// export const CONTRACT_ADDRESS = "0x01208b73584319859FF1948dC35Fc2CCbd33da9a"
-export const CONTRACT_ADDRESS = "0xa1c86be894BED6E59d92213F58807d37546d854C"
+export const CONTRACT_ADDRESS = "0x288E8EdEdFA00e42e5Fd5D9CBF415D01b97104Cb"
 
-const KEY = "trongnam";
+const KEY = "xxxigm";
 
 const getTime = () => {
     const currentTime = BigInt(Math.floor(Date.now() / 1000));
