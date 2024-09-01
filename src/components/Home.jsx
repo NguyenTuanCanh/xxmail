@@ -534,7 +534,7 @@ export default function Home(props) {
             </ul>
           )}
 
-          <div className="withLove">Made with ❤️ by Xxxigm</div>
+          <div className="withLove">Made with ❤️ by Empirex</div>
         </div>
         <div className="body-email">
           <div className="Navbar">

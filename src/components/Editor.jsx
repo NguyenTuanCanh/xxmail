@@ -28,7 +28,7 @@ export default function Editor(props) {
 
   setTimeout(() => {
     setDisplay(true);
-  }, 3000);
+  }, 5000);
 
   useEffect(() => {
     const action = async () => {

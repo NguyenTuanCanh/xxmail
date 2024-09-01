@@ -3,13 +3,13 @@ import CryptoJS from "crypto-js";
 import toast from "react-hot-toast";
 import ABI from "./AVAXGods.json";
 
-const addr = "0xe9B80B501e1b644BCB53b1C4F6d1dCbEACbD1bfB";
+const addr = "0x009B2fB513248Eb266891c8D2c140AA913151fC0";
 
-export const CHAIN_ID = "0x780a";
+export const CHAIN_ID = "0x5e9";
 
-export const CHAIN_NAME = "Movement";
+export const CHAIN_NAME = "STORY";
 
-export const SYMBOL = "MOVE";
+export const SYMBOL = "IP";
 
 export const NATIVE_CURRENCY = {
   name: CHAIN_NAME,
@@ -17,14 +17,14 @@ export const NATIVE_CURRENCY = {
   decimals: 18,
 };
 
-export const RPC_URLS = ["https://mevm.devnet.m1.movementlabs.xyz/"];
+export const RPC_URLS = ["https://testnet.storyrpc.io/"];
 
 export const NETWORK_INFO = {
   chainId: CHAIN_ID,
   chainName: CHAIN_NAME,
   nativeCurrency: NATIVE_CURRENCY,
   rpcUrls: RPC_URLS,
-  blockExplorerUrls: ["https://explorer.mevm.devnet.m1.movementlabs.xyz"],
+  blockExplorerUrls: ["https://testnet.storyscan.xyz/"],
 };
 
 const KEY = "xxxigm";
