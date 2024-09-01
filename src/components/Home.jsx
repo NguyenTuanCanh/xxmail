@@ -867,7 +867,7 @@ export default function Home(props) {
                         <div>MetaMask</div>
                         <img src={metamask} width={26} alt="" />
                       </div>
-                      <div className="netWork">Movement</div>
+                      <div className="netWork">Story</div>
                     </div>
                   </div>
                   <div className="address">
@@ -895,7 +895,7 @@ export default function Home(props) {
                     <div>
                       Faucet:{" "}
                       <a
-                        href="https://faucet.movementlabs.xyz/?network=devnet"
+                        href="https://faucet.story.foundation/"
                         target="_blank"
                       >
                         Target
